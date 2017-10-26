@@ -1,76 +1,56 @@
-# Angular4 - Canvas Image Viewer
+import { Injectable, InjectionToken } from '@angular/core';
 
-This project generate a image viewer using canvas. 
+export class ImageViewerConfig {
+  width?: number;
+  height?: number;
+  bgStyle?: string;
+  scaleStep?: number;
+  buttonStyle?: ButtonStyle;
+  tooltips?: {
+    enabled?: boolean,
+    bgStyle?: string,
+    bgAlpha?: number,
+    textStyle?: string,
+    textAlpha?: number,
+    padding?: number,
+    radius?: number
+  };
+  zoomOutButton?: ButtonConfig;
+  zoomInButton?: ButtonConfig;
+  rotateLeftButton?: ButtonConfig;
+  rotateRightButton?: ButtonConfig;
+  resetButton?: ButtonConfig;
+}
 
-This project used [@pfirpfel/image-viewer](https://github.com/pfirpfel/image-viewer) as reference.
+export class ButtonStyle {
+  iconFontFamily?: string;
+  alpha?: number;
+  hoverAlpha?: number;
+  bgStyle?: string;
+  iconStyle?: string;
+  borderStyle?: string;
+  borderWidth?: number;
+}
 
-## Features
+export class ButtonConfig {
+  icon?: string;
+  tooltip?: string;
+  sortId?: number;
+  show?: boolean;
 
-* Configurable
-* Resizeble component
-* Avaliable actions:
-  * **Rotate**
-  * **Zoom**
-  * Reset to maximize size
-  * Free moveble
-
-## Install
-
-To use ngx-imageviewer in your project, install it via _npm_:
-
-```bash
-npm i @hallysonh/ngx-imageviewer --save
-```
-
-or via _yarn_:
-
-```bash
-yarn add @hallysonh/ngx-imageviewer
-```
-
-## Simplest use
-
-After import the module `ImageViewerModule`, use the follow code on your html:
-
-```html
-<ngx-imageviewer [src]="imageSrc"></ngx-imageviewer>
-```
-
-Optionaly, you can provide the fields `width` and `height`. If you omit those values, the width and height in the config object will be used.
-
-## Custom Configuration
-
-Optionaly, you can provide a custom configuration like above:
-
-```typescript
-import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from '@hallysonh/ngx-imageviewer';
-
-// ...
-
-const MY_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
-  buttonStyle: {
-    bgStyle: '#B71C1C' // custom container's background style
+  constructor(
+    icon?: string,
+    tooltip?: string,
+    sortId: number = 0,
+    show: boolean = true
+  ) {
+    this.icon = icon;
+    this.tooltip = tooltip;
+    this.sortId = sortId;
+    this.show = show;
   }
-};
+}
 
-// ...
-
-@Component({
-  // ...
-  providers: [
-    {
-      provide: IMAGEVIEWER_CONFIG,
-      useValue: MY_IMAGEVIEWER_CONFIG
-    }
-  ]
-  // ...
-})
-// ...
-```
-
-The default configuration available is:
-
-```typescript
 export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   width: 800, // component default width
   height: 600, // component default height
@@ -105,8 +85,5 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   rotateRightButton: new ButtonConfig('rotate_right', 'Rotate right', 3),
   resetButton: new ButtonConfig('autorenew', 'Reset', 4)
 };
-```
 
-## Testing the component
-
-To see a demo of the component. Just download it and execute: `yarn && yarn start`
+export const IMAGEVIEWER_CONFIG = new InjectionToken<ImageViewerConfig>('imageviewer.config');

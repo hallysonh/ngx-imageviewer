@@ -1,10 +1,32 @@
+import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from './imageviewer/imageviewer.config';
 import { Component } from '@angular/core';
 
+const MY_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
+  zoomInButton: { tooltip: 'Aproximar' },
+  zoomOutButton: { tooltip: 'Distanciar' },
+  rotateLeftButton: { tooltip: 'Girar esquerda' },
+  rotateRightButton: { tooltip: 'Girar direita' },
+  resetButton: { tooltip: 'Resetar' },
+  buttonStyle: {
+    bgStyle: '#B71C1C',
+    borderWidth: 2,
+    borderStyle: '#FFFFFF',
+    iconStyle: '#FFFFFF'
+  }
+};
+
 @Component({
-  selector: 'h2-root',
+  selector: 'ngx-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  providers: [
+    {
+      provide: IMAGEVIEWER_CONFIG,
+      useValue: MY_IMAGEVIEWER_CONFIG
+    }
+  ]
 })
 export class AppComponent {
-  title = 'h2';
+  canvasWidth = 800;
+  canvasHeight = 600;
 }

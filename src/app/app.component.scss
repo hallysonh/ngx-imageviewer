@@ -1,0 +1,12 @@
+.my-imageviewer, .my-image {
+    display: inline-block;
+}
+.my-imageviewer {
+    width: 800px;
+    height: 600px;
+}
+
+.my-image {
+    max-width: 800px;
+    max-height: 600px;
+}
