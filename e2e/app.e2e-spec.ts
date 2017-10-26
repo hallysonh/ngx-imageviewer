@@ -7,8 +7,10 @@ describe('ngx-imageviewer App', () => {
     page = new AppPage();
   });
 
+  /*
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to h2!');
+    expect(page.getParagraphText()).toEqual('Welcome to ngx-imageviewer component test!');
   });
+  */
 });

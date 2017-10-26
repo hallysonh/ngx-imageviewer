@@ -1,7 +1,14 @@
 {
     "name": "@hallysonh/ngx-imageviewer",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "license": "MIT",
+    "author": {
+        "name": "Hallyson Almeida",
+        "email": "hallysonh@gmail.com"
+    },
+    "repository": {
+        "url": "https://github.com/hallysonh/ngx-imageviewer"
+    },
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
