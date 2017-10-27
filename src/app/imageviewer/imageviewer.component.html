@@ -1,5 +1,3 @@
-<canvas #imageContainer [width]="width" [height]="height" (tap)="onTap($event)" 
-    (pinchin)="processTouchEvent($event)" (pinchout)="processTouchEvent($event)" (pinchend)="onPinchEnd()"
-    (panmove)="processTouchEvent($event)" (panend)="onPanEnd()"
-    (rotate)="processTouchEvent($event)" (rotateend)="onRotateEnd()">
+<canvas #imageContainer [width]="width" [height]="height" (tap)="onTap($event)" (pinchin)="processTouchEvent($event)" (pinchout)="processTouchEvent($event)" (panmove)="processTouchEvent($event)" (panend)="onTouchEnd()" (rotatemove)="processTouchEvent($event)"
+    (rotateend)="onTouchEnd()">
 </canvas>

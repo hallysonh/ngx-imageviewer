@@ -5,6 +5,7 @@ export class ImageViewerConfig {
   height?: number;
   bgStyle?: string;
   scaleStep?: number;
+  rotateStepper?: boolean;
   buttonStyle?: ButtonStyle;
   tooltips?: {
     enabled?: boolean,
@@ -56,6 +57,7 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   height: 600, // component default height
   bgStyle: '#ECEFF1', // component background style
   scaleStep: 0.1, // zoom scale step (using the zoom in/out buttons)
+  rotateStepper: false,
   buttonStyle: {
     iconFontFamily: 'Material Icons', // font used to render the button icons
     alpha: 0.5, // buttons' transparence value
@@ -74,13 +76,8 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     padding: 15, // tooltip padding
     radius: 20 // tooltip border radius
   },
-  zoomOutButton: { // zoomOut button config
-    icon: 'zoom_out', // icon text
-    tooltip: 'Zoom out', // button tooltip
-    sortId: 0, // number used to determine the order of the buttons
-    show: true // used to show/hide the button
-  },
-  zoomInButton: new ButtonConfig('zoom_in', 'Zoom in', 1), // short button configuration
+  zoomOutButton: new ButtonConfig('zoom_out', 'Zoom out', 0),
+  zoomInButton: new ButtonConfig('zoom_in', 'Zoom in', 1),
   rotateLeftButton: new ButtonConfig('rotate_left', 'Rotate left', 2),
   rotateRightButton: new ButtonConfig('rotate_right', 'Rotate right', 3),
   resetButton: new ButtonConfig('autorenew', 'Reset', 4)

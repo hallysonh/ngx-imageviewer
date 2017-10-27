@@ -2,6 +2,7 @@ import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from './imageviewer/imageviewer
 import { Component } from '@angular/core';
 
 const MY_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
+  rotateStepper: true,
   zoomInButton: { tooltip: 'Aproximar' },
   zoomOutButton: { tooltip: 'Distanciar' },
   rotateLeftButton: { tooltip: 'Girar esquerda' },

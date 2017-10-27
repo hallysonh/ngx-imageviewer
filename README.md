@@ -1,6 +1,6 @@
 # Angular4 - Canvas Image Viewer
 
-This project generate a image viewer using canvas. 
+This project generate a image viewer using canvas.
 
 This project used [@pfirpfel/image-viewer](https://github.com/pfirpfel/image-viewer) as reference.
 
@@ -19,13 +19,31 @@ This project used [@pfirpfel/image-viewer](https://github.com/pfirpfel/image-vie
 To use ngx-imageviewer in your project, install it via _npm_:
 
 ```bash
-npm i @hallysonh/ngx-imageviewer --save
+npm i -S @hallysonh/ngx-imageviewer
 ```
 
 or via _yarn_:
 
 ```bash
 yarn add @hallysonh/ngx-imageviewer
+```
+
+## Icon Font
+
+You can use any icon font to render the button's icons. However, the default icon font is the Google's Material Icons. To use them you can just add the follow line to your index.html:
+
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+```
+
+Optionaly, you can also install the font library via npm or yarn.
+
+## HammerJs
+
+To add touch support, add HammerJs in your dependencies by `yarn add hammerjs` or `npm i -S hammerjs` and include on your main module import:
+
+```typescript
+import 'hammerjs';
 ```
 
 ## Simplest use
@@ -76,6 +94,7 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   height: 600, // component default height
   bgStyle: '#ECEFF1', // component background style
   scaleStep: 0.1, // zoom scale step (using the zoom in/out buttons)
+  rotateStepper: false, // touch rotate should rotate only 90 to 90 degrees
   buttonStyle: {
     iconFontFamily: 'Material Icons', // font used to render the button icons
     alpha: 0.5, // buttons' transparence value
@@ -109,4 +128,4 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
 
 ## Testing the component
 
-To see a demo of the component. Just download it and execute: `yarn && yarn start`
+To see a demo of the component. Just download it and execute: `yarn && yarn start` or `npm install && npm run start`
