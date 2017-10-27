@@ -148,7 +148,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.touchStartState.rotate = undefined;
   }
 
-  private processTouchEvent(evt) {
+  processTouchEvent(evt) {
     // process pan
     if (!this.touchStartState.centre) { this.touchStartState.centre = this.centre; }
     this.centre = {
