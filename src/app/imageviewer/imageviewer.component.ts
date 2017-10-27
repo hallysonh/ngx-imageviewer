@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Renderer, Inject } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Renderer, Inject, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { ImageViewerConfig, IMAGEVIEWER_CONFIG, IMAGEVIEWER_CONFIG_DEFAULT, ButtonConfig, ButtonStyle } from './imageviewer.config';
@@ -8,7 +8,7 @@ import { ImageViewerConfig, IMAGEVIEWER_CONFIG, IMAGEVIEWER_CONFIG_DEFAULT, Butt
   templateUrl: './imageviewer.component.html',
   styleUrls: ['./imageviewer.component.scss']
 })
-export class ImageViewerComponent implements AfterViewInit {
+export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   //#region Input properties
   @Input() src: string;
@@ -47,6 +47,8 @@ export class ImageViewerComponent implements AfterViewInit {
 
   // Image Scale
   private scale = 1;
+  private minScale = 0;
+  private maxScale = 4;
   private angle = 0;
 
   // Image centre (scroll offset)
@@ -67,13 +69,12 @@ export class ImageViewerComponent implements AfterViewInit {
 
   // UI element which is currently in focus, i.e. the mouse is hovering over it
   private focusUIElement = null;
-
-  // active element (mainly) used for dragging
-  private activeMoveElement = this.centre;
-  // track state of left mouse button (even outside the canvas)
-  private leftMouseButtonDown = false;
-  // keep last mouse position to calculate drag distance
-  private mouseLastPos = null;
+  // check if is moving with touch
+  private onTouchMode = false;
+  // listeners destroy array
+  private listenDestroyList = []
+  // touch start state
+  private touchStartState: any = {};
 
   // image
   private image = new Image();
@@ -120,6 +121,44 @@ export class ImageViewerComponent implements AfterViewInit {
     this.addEventListeners();
   }
 
+  ngOnDestroy() {
+    this.listenDestroyList.forEach(listenDestroy => {
+      if(typeof listenDestroy === 'function') { 
+        listenDestroy();
+      }
+    });
+  }
+
+  onTap(evt) {
+    const activeElement = this.getUIElement(this.screenToCanvasCentre(evt.center));
+    if (activeElement !== null) { activeElement.onClick(evt); }
+  }
+  onPanEnd() { this.touchStartState.centre = undefined; }
+  onPinchEnd() { this.touchStartState.scale = undefined; }
+  onRotateEnd() { this.touchStartState.angle = undefined;}
+
+  private processTouchEvent(evt) {
+    // process pan
+    if(!this.touchStartState.centre) { this.touchStartState.centre = this.centre; }
+    this.centre = {
+      x: this.touchStartState.centre.x + evt.deltaX,
+      y: this.touchStartState.centre.y + evt.deltaY
+    };
+
+    // process pinch in/out
+    if(!this.touchStartState.scale) { this.touchStartState.scale = this.scale; }
+    const newScale = this.touchStartState.scale * evt.scale;
+    this.scale = newScale > this.maxScale ? this.maxScale : newScale < this.minScale ? this.minScale : newScale;
+
+    // TODO implement rotantin 90 to 90 steps
+    // process rotate left/right
+    if(!this.touchStartState.angle) { this.touchStartState.angle = this.angle; }
+    // this.angle = this.touchStartState.angle + evt.angle;
+
+    this.dirty = true;
+  }
+  
+
   private extendsDefaultConfig(cfg: ImageViewerConfig) {
     const defaultCfg = IMAGEVIEWER_CONFIG_DEFAULT;
     const localCfg = Object.assign({}, defaultCfg, cfg);
@@ -135,12 +174,14 @@ export class ImageViewerComponent implements AfterViewInit {
 
   //#region Button Actions
   private zoomIn() {
-    this.scale = this.scale * (1 + this.config.scaleStep);
+    const newScale = this.scale * (1 + this.config.scaleStep);
+    this.scale = newScale > this.maxScale ? this.maxScale : newScale;
     this.dirty = true;
   }
 
   private zoomOut() {
-    this.scale = this.scale * (1 - this.config.scaleStep);
+    const newScale = this.scale * (1 - this.config.scaleStep);
+    this.scale = newScale < this.minScale ? this.minScale : newScale;
     this.dirty = true;
   }
 
@@ -161,11 +202,14 @@ export class ImageViewerComponent implements AfterViewInit {
       width: !inverted ? this.canvas.width : this.canvas.height,
       height: !inverted ? this.canvas.height : this.canvas.width
     };
+
     if (((canvas.height / this.image.height) * this.image.width) <= canvas.width) {
       this.scale = canvas.height / this.image.height;
     } else {
       this.scale = canvas.width / this.image.width;
     }
+    this.minScale = this.scale / 4;
+    this.maxScale = this.scale * 4;
 
     // centre at image centre
     this.centre.x = this.canvas.width / 2;
@@ -285,79 +329,28 @@ export class ImageViewerComponent implements AfterViewInit {
   //#region Event Handlers
 
   private addEventListeners() {
-    // dragging image or ui-elements
-    this.renderer.listenGlobal('document', 'mouseup', (evt) => this.onMouseUp(evt));
-    this.renderer.listenGlobal('document', 'touchend', (evt) => this.touchToMouseEvent(evt, 'mouseup', document));
-
-    this.renderer.listen(this.canvas, 'mousedown', (evt) => this.onMouseDown(evt));
-    this.renderer.listen(this.canvas, 'touchstart', (evt) => this.touchToMouseEvent(evt, 'mousedown'));
-
     // zooming
-    this.renderer.listen(this.canvas, 'DOMMouseScroll', (evt) => this.onMouseWheel(evt));
-    this.renderer.listen(this.canvas, 'mousewheel', (evt) => this.onMouseWheel(evt));
+    this.listenDestroyList.push(this.renderer.listen(this.canvas, 'DOMMouseScroll', (evt) => this.onMouseWheel(evt)));
+    this.listenDestroyList.push(this.renderer.listen(this.canvas, 'mousewheel', (evt) => this.onMouseWheel(evt)));
 
-    // moving
-    this.renderer.listen(this.canvas, 'mousemove', (evt) => this.onMouseMove(evt));
-    this.renderer.listen(this.canvas, 'touchmove', (evt) => this.touchToMouseEvent(evt, 'mousemove'));
-
-    // left clicking
-    this.renderer.listen(this.canvas, 'click', (evt) => this.onMouseClick(evt));
+    // show tooltip when mouseover it
+    this.listenDestroyList.push(this.renderer.listen(this.canvas, 'mousemove', (evt) => this.showTooltip(this.screenToCanvasCentre({ x: evt.clientX, y: evt.clientY }))));
   }
 
-  private touchToMouseEvent(touchEvent: TouchEvent, eventName, target?) {
-    const touch: Touch = touchEvent.touches.length ? touchEvent.touches[0] :
-      touchEvent.changedTouches.length ? touchEvent.changedTouches[0] : null;
-    const mouseEvent = new MouseEvent(eventName);
-    if (touch) {
-      mouseEvent.initMouseEvent(eventName, true, true, window, 1,
-        touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-        false, false, false, false, 0 /*left*/, null);
-    }
-    (target || touchEvent.target).dispatchEvent(mouseEvent);
-    touchEvent.preventDefault();
+  private screenToCanvasCentre(pos: {x: number, y: number}) {
+    const rect = this.canvas.getBoundingClientRect();
+    return { x: pos.x - rect.left, y: pos.y - rect.top};
   }
 
   private getUIElements(): Button[] {
-    let collectedUIElements = [];
-    // add buttons
-    collectedUIElements = collectedUIElements.concat(this.buttons);
-
-    return collectedUIElements;
+    return this.buttons;
   }
 
-  private getUIElement(evt) {
-    const rect = this.canvas.getBoundingClientRect();
-    const pos = { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+  private getUIElement(pos: { x: number, y: number}) {
     const activeUIElement = this.getUIElements().filter((uiElement) => {
       return uiElement.isWithinBounds(pos.x, pos.y);
     });
     return (activeUIElement.length > 0 ) ? activeUIElement[0] : null;
-  }
-
-  private onMouseDown(evt) {
-    if (evt.button === 0) { // left/main button
-      const activeElement = this.getUIElement(evt);
-      if (activeElement === null || !activeElement.onMouseDown(evt)) {
-        // set flag for image moving
-        this.leftMouseButtonDown = true;
-      }
-    }
-  }
-
-  private onMouseUp(evt) {
-    if (evt.button === 0) { // left/main button
-      this.activeMoveElement = this.centre;
-      this.leftMouseButtonDown = false;
-    }
-  }
-
-  private onMouseClick(evt) {
-    if (evt.button === 0) { // left/main button
-      const activeElement = this.getUIElement(evt);
-      if (activeElement !== null) {
-        activeElement.onClick(evt);
-      }
-    }
   }
 
   private onMouseWheel(evt) {
@@ -370,39 +363,29 @@ export class ImageViewerComponent implements AfterViewInit {
     }
   }
 
-  private onMouseMove(evt) {
-    const rect = this.canvas.getBoundingClientRect();
-    const newPos = { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
-    this.mouseLastPos = this.mouseLastPos || { x: 0, y: 0 };
-    const deltaX = newPos.x - this.mouseLastPos.x;
-    const deltaY = newPos.y - this.mouseLastPos.y;
-    if (this.leftMouseButtonDown) {
-      this.activeMoveElement.x += deltaX;
-      this.activeMoveElement.y += deltaY;
-      this.dirty = true;
-    } else {
-      const activeElement = this.getUIElement(evt);
-      const oldToolTip = this.currentTooltip;
-      if (activeElement !== null) {
-        if (typeof activeElement.hover !== 'undefined') {
-          activeElement.hover = true;
-        }
-        if (typeof activeElement.tooltip !== 'undefined') {
-          this.currentTooltip = activeElement.tooltip;
-        }
-        // new focus UI element?
-        if (activeElement !== this.focusUIElement) {
-          this.focusUIElement = activeElement;
-        }
-      } else { // no activeElement
-        this.currentTooltip = null;
-        if (this.focusUIElement !== null) {
-          this.focusUIElement = null;
-        }
+  private showTooltip(pos: { x: number, y: number }) {
+    this.getUIElements().forEach(x => x.hover = false);
+
+    const activeElement = this.getUIElement(pos);
+    const oldToolTip = this.currentTooltip;
+    if (activeElement !== null) {
+      if (typeof activeElement.hover !== 'undefined') {
+        activeElement.hover = true;
+      } 
+      if (typeof activeElement.tooltip !== 'undefined') {
+        this.currentTooltip = activeElement.tooltip;
       }
-      if (oldToolTip !== this.currentTooltip) { this.dirty = true; }
+      // new focus UI element?
+      if (activeElement !== this.focusUIElement) {
+        this.focusUIElement = activeElement;
+      }
+    } else { // no activeElement
+      this.currentTooltip = null;
+      if (this.focusUIElement !== null) {
+        this.focusUIElement = null;
+      }
     }
-    this.mouseLastPos = newPos;
+    if (oldToolTip !== this.currentTooltip) { this.dirty = true; }
   }
 
   //#endregion

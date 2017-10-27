@@ -1,12 +1,15 @@
-.my-imageviewer, .my-image {
-    display: inline-block;
-}
-.my-imageviewer {
-    width: 800px;
-    height: 600px;
-}
+:host {
+    display: block;
+    width: 1000px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
 
-.my-image {
-    max-width: 800px;
-    max-height: 600px;
+    .canvasForm {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 20px;
+    }
+    ngx-imageviewer canvas {
+        margin: 0 auto;
+    }
 }

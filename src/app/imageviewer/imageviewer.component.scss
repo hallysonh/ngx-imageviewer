@@ -1,17 +1,8 @@
 :host {
     display: block;
-    // overflow: scroll;
-    position: relative;
-    img {
-        transition: all 1s;
-        width: 100%;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .tools {
-        position: absolute;
-        bottom: 10px;
+    
+    canvas {
+        margin: 0 auto;
+        display: block;
     }
 }
