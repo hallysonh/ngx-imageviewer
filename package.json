@@ -13,7 +13,7 @@
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build",
-        "gendoc": "yarn build && del-cli docs && move dist docs",
+        "gendoc": "ng build -prod -op docs --base-href ngx-imageviewer",
         "packagr": "ng-packagr -p ng-package.json",
         "publish": "yarn packagr && npm publish dist --access public"
     },
