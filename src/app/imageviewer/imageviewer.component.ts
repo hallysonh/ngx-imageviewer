@@ -11,9 +11,17 @@ import { ImageViewerConfig, IMAGEVIEWER_CONFIG, IMAGEVIEWER_CONFIG_DEFAULT, Butt
 export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   //#region Input properties
-  @Input() src: string;
+  private _src: string;
+  get src() { return this._src; }
+  @Input('src') set src(value) {
+    if (value === this._src) { return; }
+    this._src = value;
+    if (this.image.src) {
+      this.image.src = this._src;
+    }
+  }
 
-  private _width;
+  private _width: number;
   get width() { return this._width; }
   @Input('width') set width(value) {
     if (value === this._width) { return; }
@@ -22,7 +30,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.resetImage();
   }
 
-  private _height;
+  private _height: number;
   get height() { return this._height; }
   @Input('height') set height(value) {
     if (value === this._height) { return; }
