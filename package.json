@@ -1,6 +1,6 @@
 {
     "name": "@hallysonh/ngx-imageviewer",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "license": "MIT",
     "author": {
         "name": "Hallyson Almeida",
@@ -15,7 +15,7 @@
         "build": "ng build",
         "gendoc": "ng build -prod -op docs --base-href ngx-imageviewer",
         "packagr": "ng-packagr -p ng-package.json",
-        "publish": "yarn run packagr && npm publish dist --access public"
+        "packagr:send": "yarn run packagr && npm publish dist --access public"
     },
     "private": false,
     "peerDependencies": {
