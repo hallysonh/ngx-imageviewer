@@ -1,6 +1,6 @@
 {
     "name": "@hallysonh/ngx-imageviewer",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "license": "MIT",
     "author": {
         "name": "Hallyson Almeida",
@@ -18,6 +18,9 @@
         "packagr:send": "yarn run packagr && npm publish dist --access public"
     },
     "private": false,
+    "dependencies": {
+        "hammerjs": "^2.0.8"
+    },
     "peerDependencies": {
         "@angular/common": "^4.2.x",
         "@angular/core": "^4.2.x",
@@ -42,7 +45,6 @@
         "codelyzer": "~3.2.0",
         "core-js": "^2.4.1",
         "del-cli": "^1.1.0",
-        "hammerjs": "^2.0.8",
         "jasmine-core": "~2.6.2",
         "jasmine-spec-reporter": "~4.1.0",
         "karma": "~1.7.0",
