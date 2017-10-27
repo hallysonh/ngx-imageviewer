@@ -14,6 +14,10 @@ This project used [@pfirpfel/image-viewer](https://github.com/pfirpfel/image-vie
   * Reset to maximize size
   * Free moveble
 
+## Demo
+
+Access a demo [here](https://hallysonh.github.io/ngx-imageviewer/) or download this project and execute: `yarn && yarn start` or `npm install && npm run start` to self server it.
+
 ## Install
 
 To use ngx-imageviewer in your project, install it via _npm_:
@@ -125,7 +129,3 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   resetButton: new ButtonConfig('autorenew', 'Reset', 4)
 };
 ```
-
-## Testing the component
-
-To see a demo of the component. Just download it and execute: `yarn && yarn start` or `npm install && npm run start`
