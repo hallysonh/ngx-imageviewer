@@ -1,15 +1,11 @@
 :host {
     display: block;
-    width: 1000px;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-
     .canvasForm {
         width: 100%;
         margin-bottom: 10px;
-        padding: 20px;
-    }
-    ngx-imageviewer canvas {
-        margin: 0 auto;
+        padding: 20px 0;
+        &>div {
+            margin-bottom: 10px;
+        }
     }
 }

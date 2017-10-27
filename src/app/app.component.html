@@ -1,11 +1,15 @@
+<h1>Ngx-ImageViewer Demo</h1>
 <div class="canvasForm">
-    <label>Canvas Dimention:</label>
-    <input [(ngModel)]="canvasWidth">
-    <span>X</span>
-    <input [(ngModel)]="canvasHeight">
+    <div>
+        <label>Image Url: </label>
+        <input [(ngModel)]="imageSrc" size="100">
+    </div>
+    <div>
+        <label>Canvas Dimention:</label>
+        <input [(ngModel)]="canvasWidth">
+        <span>X</span>
+        <input [(ngModel)]="canvasHeight">
+    </div>
 </div>
 
-<ngx-imageviewer src="https://awesomewallpapers.files.wordpress.com/2016/05/uaturfg.jpg" [width]="canvasWidth" [height]="canvasHeight"></ngx-imageviewer>
-
-<!-- <img class="my-image" src="https://awesomewallpapers.files.wordpress.com/2016/05/uaturfg.jpg"> -->
-<!-- https://dummyimage.com/1024x768/000/fff.jpg -->
+<ngx-imageviewer [src]="imageSrc" [width]="canvasWidth" [height]="canvasHeight"></ngx-imageviewer>

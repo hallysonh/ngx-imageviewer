@@ -30,4 +30,5 @@ const MY_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
 export class AppComponent {
   canvasWidth = 800;
   canvasHeight = 600;
+  imageSrc = 'https://dummyimage.com/1024x768/000/fff.jpg';
 }
