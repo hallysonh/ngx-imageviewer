@@ -76,11 +76,11 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     padding: 15, // tooltip padding
     radius: 20 // tooltip border radius
   },
-  zoomOutButton: new ButtonConfig('zoom_out', 'Zoom out', 0),
-  zoomInButton: new ButtonConfig('zoom_in', 'Zoom in', 1),
-  rotateLeftButton: new ButtonConfig('rotate_left', 'Rotate left', 2),
-  rotateRightButton: new ButtonConfig('rotate_right', 'Rotate right', 3),
-  resetButton: new ButtonConfig('autorenew', 'Reset', 4)
+  zoomOutButton: new ButtonConfig(String.fromCharCode(0xE900), 'Zoom out', 0),
+  zoomInButton: new ButtonConfig(String.fromCharCode(0xE8FF), 'Zoom in', 1),
+  rotateLeftButton: new ButtonConfig(String.fromCharCode(0xE419), 'Rotate left', 2),
+  rotateRightButton: new ButtonConfig(String.fromCharCode(0xE41A), 'Rotate right', 3),
+  resetButton: new ButtonConfig(String.fromCharCode(0xE863), 'Reset', 4)
 };
 
 export const IMAGEVIEWER_CONFIG = new InjectionToken<ImageViewerConfig>('imageviewer.config');
