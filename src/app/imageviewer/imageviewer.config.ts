@@ -23,7 +23,7 @@ export class ImageViewerConfig {
   resetButton?: ButtonConfig;
 }
 
-export class ButtonStyle {
+export interface ButtonStyle {
   iconFontFamily?: string;
   alpha?: number;
   hoverAlpha?: number;
@@ -33,23 +33,15 @@ export class ButtonStyle {
   borderWidth?: number;
 }
 
-export class ButtonConfig {
+export interface ButtonConfig {
   icon?: string;
   tooltip?: string;
   sortId?: number;
   show?: boolean;
+}
 
-  constructor(
-    icon?: string,
-    tooltip?: string,
-    sortId: number = 0,
-    show: boolean = true
-  ) {
-    this.icon = icon;
-    this.tooltip = tooltip;
-    this.sortId = sortId;
-    this.show = show;
-  }
+export function createButtonConfig(icon?: string, tooltip?: string, sortId: number = 0, show: boolean = true) {
+  return { icon: icon, tooltip: tooltip, sortId: sortId, show: show }
 }
 
 export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
@@ -76,11 +68,11 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     padding: 15, // tooltip padding
     radius: 20 // tooltip border radius
   },
-  zoomOutButton: new ButtonConfig(String.fromCharCode(0xE900), 'Zoom out', 0),
-  zoomInButton: new ButtonConfig(String.fromCharCode(0xE8FF), 'Zoom in', 1),
-  rotateLeftButton: new ButtonConfig(String.fromCharCode(0xE419), 'Rotate left', 2),
-  rotateRightButton: new ButtonConfig(String.fromCharCode(0xE41A), 'Rotate right', 3),
-  resetButton: new ButtonConfig(String.fromCharCode(0xE863), 'Reset', 4)
+  zoomOutButton: createButtonConfig(String.fromCharCode(0xE900), 'Zoom out', 0),
+  zoomInButton: createButtonConfig(String.fromCharCode(0xE8FF), 'Zoom in', 1),
+  rotateLeftButton: createButtonConfig(String.fromCharCode(0xE419), 'Rotate left', 2),
+  rotateRightButton: createButtonConfig(String.fromCharCode(0xE41A), 'Rotate right', 3),
+  resetButton: createButtonConfig(String.fromCharCode(0xE863), 'Reset', 4)
 };
 
 export const IMAGEVIEWER_CONFIG = new InjectionToken<ImageViewerConfig>('imageviewer.config');

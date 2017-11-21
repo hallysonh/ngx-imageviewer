@@ -1,8 +1,10 @@
 :host {
     display: block;
-    
+
     canvas {
         margin: 0 auto;
         display: block;
     }
 }
+
+[hidden] { display: none !important;}

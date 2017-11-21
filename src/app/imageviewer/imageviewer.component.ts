@@ -1,7 +1,17 @@
 import { Component, Input, ViewChild, ElementRef, AfterViewInit, Renderer, Inject, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { ImageViewerConfig, IMAGEVIEWER_CONFIG, IMAGEVIEWER_CONFIG_DEFAULT, ButtonConfig, ButtonStyle } from './imageviewer.config';
+import {
+  ImageViewerConfig,
+  IMAGEVIEWER_CONFIG,
+  IMAGEVIEWER_CONFIG_DEFAULT,
+  ButtonConfig,
+  ButtonStyle
+} from './imageviewer.config';
+import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.model';
+import { Subscription } from 'rxjs/Subscription';
+import { ImageResourceLoader } from './image.loader';
+import { PdfResourceLoader } from './pdf.loader';
 
 @Component({
   selector: 'ngx-imageviewer',
@@ -16,9 +26,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   @Input('src') set src(value) {
     if (value === this._src) { return; }
     this._src = value;
-    if (this.image.src) {
-      this.image.src = this._src;
-    }
+    this.setUpResource();
   }
 
   private _width: number;
@@ -50,16 +58,9 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   // dirty state
   private dirty = true;
 
-  // Image Scale
-  private scale = 1;
-  private minScale = 0;
-  private maxScale = 4;
-  private angle = 0;
-
-  // Image centre (scroll offset)
-  private centre = { x: 0, y: 0 };
-
   // action buttons
+  private nextPageButton: Button;
+  private beforePageButton: Button;
   private zoomOutButton: Button;
   private zoomInButton: Button;
   private rotateLeftButton: Button;
@@ -78,8 +79,10 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   // list of event listener destroyers
   private listenDestroyList = [];
 
-  // image
-  private image = new Image();
+  // image / Pdf Drawable Resource
+  private resource: ResourceLoader;
+  private resourceChangeSub: Subscription;
+
   //#endregion
 
   //#region Lifecycle events
@@ -89,11 +92,11 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     @Inject(IMAGEVIEWER_CONFIG) private config: ImageViewerConfig
   ) {
     this.config = this.extendsDefaultConfig(config);
-    this.zoomOutButton     = new Button(this.config.zoomOutButton, this.config.buttonStyle);
-    this.zoomInButton      = new Button(this.config.zoomInButton, this.config.buttonStyle);
-    this.rotateLeftButton  = new Button(this.config.rotateLeftButton, this.config.buttonStyle);
+    this.zoomOutButton = new Button(this.config.zoomOutButton, this.config.buttonStyle);
+    this.zoomInButton = new Button(this.config.zoomInButton, this.config.buttonStyle);
+    this.rotateLeftButton = new Button(this.config.rotateLeftButton, this.config.buttonStyle);
     this.rotateRightButton = new Button(this.config.rotateRightButton, this.config.buttonStyle);
-    this.resetButton       = new Button(this.config.resetButton, this.config.buttonStyle);
+    this.resetButton = new Button(this.config.resetButton, this.config.buttonStyle);
     this.buttons = [
       this.zoomOutButton,
       this.zoomInButton,
@@ -101,7 +104,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this.rotateRightButton,
       this.resetButton
     ].filter(item => item.display)
-    .sort((a, b) => a.sortId - b.sortId);
+      .sort((a, b) => a.sortId - b.sortId);
   }
 
   ngAfterViewInit() {
@@ -112,9 +115,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.canvas.width = this.width || this.config.width;
     this.canvas.height = this.height || this.config.height;
 
-    // setting image
-    this.image.addEventListener('load', (evt) => this.updateCanvas(), false);
-    this.image.src = this.src;
+    // setting resource
+    this.setUpResource();
 
     // setting buttons actions
     this.zoomOutButton.onClick = (evt) => { this.zoomOut(); return false; };
@@ -135,6 +137,29 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       }
     });
   }
+
+  setUpResource() {
+    if (isImage(this.src) && (!this.resource || !(this.resource instanceof ImageResourceLoader))) {
+      if(this.resourceChangeSub) {
+        this.resourceChangeSub.unsubscribe();
+      }
+      this.resource = new ImageResourceLoader();
+      this.resource.src = this.src;
+    } else if(isPdf(this.src) && (!this.resource || !(this.resource instanceof PdfResourceLoader))) {
+      if(this.resourceChangeSub) {
+        this.resourceChangeSub.unsubscribe();
+      }
+      this.resource = new PdfResourceLoader();
+      this.resource.src = this.src;
+    }
+    if (this.resource) {
+      this.resourceChangeSub = this.resource.onResourceChange().subscribe(() => {
+        this.updateCanvas();
+      });
+      this.resource.loadResource();
+      this.resetImage();
+    }
+  }
   //#endregion
 
   //#region Touch events
@@ -142,30 +167,32 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     const activeElement = this.getUIElement(this.screenToCanvasCentre(evt.center));
     if (activeElement !== null) { activeElement.onClick(evt); }
   }
+
   onTouchEnd() {
-    this.touchStartState.centre = undefined;
+    this.touchStartState.viewport = undefined;
     this.touchStartState.scale = undefined;
     this.touchStartState.rotate = undefined;
   }
 
   processTouchEvent(evt) {
     // process pan
-    if (!this.touchStartState.centre) { this.touchStartState.centre = this.centre; }
-    this.centre = {
-      x: this.touchStartState.centre.x + evt.deltaX,
-      y: this.touchStartState.centre.y + evt.deltaY
-    };
+    if (!this.touchStartState.viewport) { this.touchStartState.viewport = Object.assign({}, this.resource.viewport); }
+
+    const viewport = this.resource.viewport;
+    viewport.x = this.touchStartState.viewport.x + evt.deltaX;
+    viewport.y = this.touchStartState.viewport.y + evt.deltaY;
 
     // process pinch in/out
-    if (!this.touchStartState.scale) { this.touchStartState.scale = this.scale; }
+    if (!this.touchStartState.scale) { this.touchStartState.scale = this.resource.viewport.scale; }
     const newScale = this.touchStartState.scale * evt.scale;
-    this.scale = newScale > this.maxScale ? this.maxScale : newScale < this.minScale ? this.minScale : newScale;
+    viewport.scale = newScale > this.resource.maxScale ? this.resource.maxScale :
+      newScale < this.resource.minScale ? this.resource.minScale : newScale;
 
     // process rotate left/right
-    if (!this.touchStartState.rotate) { this.touchStartState.rotate = { angle: this.angle, startRotate: evt.rotation }; }
+    if (!this.touchStartState.rotate) { this.touchStartState.rotate = { rotation: viewport.rotation, startRotate: evt.rotation }; }
     if (evt.rotation !== 0) {
-      const newAngle = this.touchStartState.rotate.angle + evt.rotation - this.touchStartState.rotate.startRotate;
-      this.angle = this.config.rotateStepper ? this.toSquareAngle(newAngle) : newAngle;
+      const newAngle = this.touchStartState.rotate.rotation + evt.rotation - this.touchStartState.rotate.startRotate;
+      viewport.rotation = this.config.rotateStepper ? toSquareAngle(newAngle) : newAngle;
     }
     this.dirty = true;
   }
@@ -212,56 +239,36 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   //#region Button Actions
   private zoomIn() {
-    const newScale = this.scale * (1 + this.config.scaleStep);
-    this.scale = newScale > this.maxScale ? this.maxScale : newScale;
+    const newScale = this.resource.viewport.scale * (1 + this.config.scaleStep);
+    this.resource.viewport.scale = newScale > this.resource.maxScale ? this.resource.maxScale : newScale;
     this.dirty = true;
   }
 
   private zoomOut() {
-    const newScale = this.scale * (1 - this.config.scaleStep);
-    this.scale = newScale < this.minScale ? this.minScale : newScale;
+    const newScale = this.resource.viewport.scale * (1 - this.config.scaleStep);
+    this.resource.viewport.scale = newScale < this.resource.minScale ? this.resource.minScale : newScale;
     this.dirty = true;
   }
 
   private rotateLeft() {
-    this.angle = this.angle === 0 ? 270 : this.angle - 90;
+    const viewport = this.resource.viewport;
+    viewport.rotation = viewport.rotation === 0 ? 270 : viewport.rotation - 90;
     this.dirty = true;
   }
 
   private rotateRight() {
-    this.angle = this.angle === 270 ? 0 : this.angle + 90;
+    const viewport = this.resource.viewport;
+    viewport.rotation = viewport.rotation === 270 ? 0 : viewport.rotation + 90;
     this.dirty = true;
   }
 
   private resetImage() {
-    if (!this.image || !this.image.width || !this.canvas) { return; }
-    const inverted = this.toSquareAngle(this.angle) / 90 % 2 !== 0;
-    const canvas = {
-      width: !inverted ? this.canvas.width : this.canvas.height,
-      height: !inverted ? this.canvas.height : this.canvas.width
-    };
-
-    if (((canvas.height / this.image.height) * this.image.width) <= canvas.width) {
-      this.scale = canvas.height / this.image.height;
-    } else {
-      this.scale = canvas.width / this.image.width;
-    }
-    this.minScale = this.scale / 4;
-    this.maxScale = this.scale * 4;
-
-    // centre at image centre
-    this.centre.x = this.canvas.width / 2;
-    this.centre.y = this.canvas.height / 2;
-
-    // image changed
-    this.dirty = true;
+    this.dirty = this.resource.resetViewport(this.canvas);
   }
   //#endregion
 
   //#region Draw Canvas
   private updateCanvas() {
-    if (!this.image || !this.image.width) { return; }
-
     this.resetImage();
 
     // start new render loop
@@ -274,25 +281,19 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this.dirty = false;
 
       const ctx = this.context;
-      // clear canvas
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // Draw background color;
-      ctx.fillStyle = this.config.bgStyle;
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // draw image (transformed, rotate and scaled)
       ctx.save();
 
-      ctx.translate(this.centre.x, this.centre.y);
-      ctx.rotate(this.angle * Math.PI / 180);
-      ctx.scale(this.scale, this.scale);
-      ctx.drawImage(this.image, -this.image.width / 2, -this.image.height / 2);
+      this.resource.draw(ctx, this.config, this.canvas, () => {
+        ctx.restore();
 
-      ctx.restore();
+        // draw buttons
+        this.drawButtons(ctx);
 
-      // draw buttons
-      this.drawButtons(ctx);
+        // draw paginator
+        if (this.resource.showItemsQuantity) {
+          this.drawPaginator(ctx);
+        }
+      });
     }
     requestAnimationFrame(() => this.render());
   }
@@ -320,8 +321,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         , rectWidth = textSize + padding
         , rectHeight = fontSize * 0.70 + padding
         , rectX = this.canvas.width
-                  - (2 * radius + 2 * padding) // buttons
-                  - rectWidth
+          - (2 * radius + 2 * padding) // buttons
+          - rectWidth
         , rectY = this.canvas.height - rectHeight - padding
         , textX = rectX + 0.5 * padding
         , textY = this.canvas.height - 1.5 * padding;
@@ -336,6 +337,10 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
       ctx.restore();
     }
+  }
+
+  private drawPaginator(ctx) {
+    // TODO
   }
 
   private drawRoundRectangle(ctx, x, y, width, height, radius, fill, stroke) {
@@ -363,9 +368,6 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   //#endregion
 
   //#region Utils
-  private toSquareAngle(angle: number) {
-    return 90 * ((Math.trunc(angle / 90) + (Math.trunc(angle % 90) > 45 ? 1 : 0)) % 4);
-  }
 
   private extendsDefaultConfig(cfg: ImageViewerConfig) {
     const defaultCfg = IMAGEVIEWER_CONFIG_DEFAULT;
@@ -380,119 +382,28 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     return localCfg;
   }
 
-  private screenToCanvasCentre(pos: {x: number, y: number}) {
+  private screenToCanvasCentre(pos: { x: number, y: number }) {
     const rect = this.canvas.getBoundingClientRect();
-    return { x: pos.x - rect.left, y: pos.y - rect.top};
+    return { x: pos.x - rect.left, y: pos.y - rect.top };
   }
 
   private getUIElements(): Button[] {
     return this.buttons;
   }
 
-  private getUIElement(pos: { x: number, y: number}) {
+  private getUIElement(pos: { x: number, y: number }) {
     const activeUIElement = this.getUIElements().filter((uiElement) => {
       return uiElement.isWithinBounds(pos.x, pos.y);
     });
-    return (activeUIElement.length > 0 ) ? activeUIElement[0] : null;
+    return (activeUIElement.length > 0) ? activeUIElement[0] : null;
   }
   //#endregion
 }
 
-export class Button {
-  //#region Properties
-  sortId = 0;
+function isImage(url: string) {
+  return url && url.match('\\.(png|jpg|jpeg|gif)|image/png') !== null;
+}
 
-  icon: string;
-  tooltip: string;
-
-  // hover state
-  hover = false;
-
-  // show/hide button
-  display = true;
-
-  // drawn on position
-  private drawPosition = null;
-  private drawRadius = 0;
-  //#endregion
-
-  //#region Lifecycle events
-  constructor(
-    config: ButtonConfig,
-    private style: ButtonStyle
-  ) {
-    this.sortId = config.sortId;
-    this.display = config.show;
-    this.icon = config.icon;
-    this.tooltip = config.tooltip;
-  }
-  //#endregion
-
-  //#region Events
-  // click action
-  onClick(evt) { alert('no click action set!'); return true; }
-
-  // mouse down action
-  onMouseDown(evt) { return false; }
-  //#endregion
-
-  //#region Draw Button
-  draw(ctx, x, y, radius) {
-    this.drawPosition = { x: x, y: y };
-    this.drawRadius = radius;
-
-    // preserve context
-    ctx.save();
-
-    // drawing settings
-    const isHover = (typeof this.hover === 'function') ? this.hover() : this.hover;
-    ctx.globalAlpha = (isHover) ? this.style.hoverAlpha : this.style.alpha;
-    ctx.fillStyle = this.style.bgStyle;
-    ctx.lineWidth = 0;
-
-    // draw circle
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, 2 * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-    if (this.style.borderWidth > 0) {
-      ctx.lineWidth = this.style.borderWidth;
-      ctx.strokeStyle = this.style.borderStyle;
-      ctx.stroke();
-    }
-
-    // draw icon
-    if (this.icon !== null) {
-      ctx.save();
-      // ctx.globalCompositeOperation = 'destination-out';
-      this.drawIconFont(ctx, x, y, radius);
-      ctx.restore();
-    }
-
-    // restore context
-    ctx.restore();
-  }
-
-  private drawIconFont(ctx, centreX, centreY, size) {
-    // font settings
-    ctx.font = size + 'px ' + this.style.iconFontFamily;
-    ctx.fillStyle = this.style.iconStyle;
-
-    // calculate position
-    const textSize = ctx.measureText(this.icon);
-    const x = centreX - textSize.width / 2;
-    const y = centreY + size / 2;
-
-    // draw it
-    ctx.fillText(this.icon, x, y);
-  }
-  //#endregion
-
-  //#region Utils
-  isWithinBounds(x, y) {
-    if (this.drawPosition === null) { return false; }
-    const dx = Math.abs(this.drawPosition.x - x), dy = Math.abs(this.drawPosition.y - y);
-    return dx * dx + dy * dy <= this.drawRadius * this.drawRadius;
-  }
-  //#endregion
+function isPdf(url: string) {
+  return url && url.indexOf('pdf') >= 0;
 }
