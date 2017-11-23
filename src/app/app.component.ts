@@ -1,8 +1,10 @@
-import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from './imageviewer/imageviewer.config';
+import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from './imageviewer';
 import { Component } from '@angular/core';
 
 const MY_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
   rotateStepper: true,
+  nextPageButton: { tooltip: 'Próxima página' },
+  beforePageButton: { tooltip: 'Página anterior' },
   zoomInButton: { tooltip: 'Aproximar' },
   zoomOutButton: { tooltip: 'Distanciar' },
   rotateLeftButton: { tooltip: 'Girar esquerda' },

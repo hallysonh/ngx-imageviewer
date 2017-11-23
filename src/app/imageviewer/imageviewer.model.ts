@@ -129,6 +129,7 @@ export abstract class ResourceLoader {
   protected rendering = false;
   protected resourceChange = new Subject<string>();
 
+  abstract setUp();
   abstract loadResource();
 
   public resetViewport(canvasDim: Dimension): boolean {
@@ -160,7 +161,7 @@ export abstract class ResourceLoader {
   }
 
   public draw(ctx, config: ImageViewerConfig, canvasDim: Dimension, onFinish) {
-   // clear canvas
+    // clear canvas
     ctx.clearRect(0, 0, canvasDim.width, canvasDim.height);
 
     // Draw background color;
@@ -168,10 +169,17 @@ export abstract class ResourceLoader {
     ctx.fillRect(0, 0, canvasDim.width, canvasDim.height);
 
     // draw image (transformed, rotate and scaled)
-    ctx.translate(this.viewport.x + this.viewport.width / 2, this.viewport.y + this.viewport.height / 2);
-    ctx.rotate(this.viewport.rotation * Math.PI / 180);
-    ctx.scale(this.viewport.scale, this.viewport.scale);
-    ctx.drawImage(this._image, -this._image.width / 2, -this._image.height / 2);
+    if (!this.loading && this.loaded) {
+      ctx.translate(this.viewport.x + this.viewport.width / 2, this.viewport.y + this.viewport.height / 2);
+      ctx.rotate(this.viewport.rotation * Math.PI / 180);
+      ctx.scale(this.viewport.scale, this.viewport.scale);
+      ctx.drawImage(this._image, -this._image.width / 2, -this._image.height / 2);
+    } else {
+      ctx.fillStyle = '#333';
+      ctx.font = '25px Verdana';
+      ctx.textAlign = 'center';
+      ctx.fillText('Loading...', canvasDim.width / 2, canvasDim.height / 2);
+    }
 
     onFinish(ctx, config, canvasDim);
   }

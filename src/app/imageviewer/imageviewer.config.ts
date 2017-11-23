@@ -16,6 +16,8 @@ export class ImageViewerConfig {
     padding?: number,
     radius?: number
   };
+  nextPageButton?: ButtonConfig;
+  beforePageButton?: ButtonConfig;
   zoomOutButton?: ButtonConfig;
   zoomInButton?: ButtonConfig;
   rotateLeftButton?: ButtonConfig;
@@ -68,6 +70,8 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     padding: 15, // tooltip padding
     radius: 20 // tooltip border radius
   },
+  nextPageButton: createButtonConfig(String.fromCharCode(0xE409), 'Next page', 0),
+  beforePageButton: createButtonConfig(String.fromCharCode(0xE408), 'Previous page', 1),
   zoomOutButton: createButtonConfig(String.fromCharCode(0xE900), 'Zoom out', 0),
   zoomInButton: createButtonConfig(String.fromCharCode(0xE8FF), 'Zoom in', 1),
   rotateLeftButton: createButtonConfig(String.fromCharCode(0xE419), 'Rotate left', 2),

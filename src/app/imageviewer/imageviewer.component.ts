@@ -92,6 +92,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     @Inject(IMAGEVIEWER_CONFIG) private config: ImageViewerConfig
   ) {
     this.config = this.extendsDefaultConfig(config);
+    this.nextPageButton = new Button(this.config.nextPageButton, this.config.buttonStyle);
+    this.beforePageButton = new Button(this.config.beforePageButton, this.config.buttonStyle);
     this.zoomOutButton = new Button(this.config.zoomOutButton, this.config.buttonStyle);
     this.zoomInButton = new Button(this.config.zoomInButton, this.config.buttonStyle);
     this.rotateLeftButton = new Button(this.config.rotateLeftButton, this.config.buttonStyle);
@@ -119,6 +121,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.setUpResource();
 
     // setting buttons actions
+    this.nextPageButton.onClick = (evt) => { this.nextPage(); return false; };
+    this.beforePageButton.onClick = (evt) => { this.previousPage(); return false; };
     this.zoomOutButton.onClick = (evt) => { this.zoomOut(); return false; };
     this.zoomInButton.onClick = (evt) => { this.zoomIn(); return false; };
     this.rotateLeftButton.onClick = (evt) => { this.rotateLeft(); return false; };
@@ -156,7 +160,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this.resourceChangeSub = this.resource.onResourceChange().subscribe(() => {
         this.updateCanvas();
       });
-      this.resource.loadResource();
+      this.resource.setUp();
       this.resetImage();
     }
   }
@@ -238,6 +242,23 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   //#endregion
 
   //#region Button Actions
+
+  private nextPage() {
+    if(this.resource.currentItem >= this.resource.totalItem) { return; }
+    if (this.resource.currentItem < 1) { this.resource.currentItem = 0; }
+    this.resource.currentItem++;
+    this.resource.loadResource();
+    this.dirty = true;
+  }
+
+  private previousPage() {
+    if(this.resource.currentItem <= 1) { return; }
+    if (this.resource.currentItem > this.resource.totalItem) { this.resource.currentItem = this.resource.totalItem + 1; }
+    this.resource.currentItem--;
+    this.resource.loadResource();
+    this.dirty = true;
+  }
+
   private zoomIn() {
     const newScale = this.resource.viewport.scale * (1 + this.config.scaleStep);
     this.resource.viewport.scale = newScale > this.resource.maxScale ? this.resource.maxScale : newScale;
@@ -340,7 +361,26 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private drawPaginator(ctx) {
-    // TODO
+    const padding = this.config.tooltips.padding;
+    const radius = this.config.tooltips.radius;
+    const labelWidth = 50;
+    const x1 = (this.canvas.width - labelWidth)/2 - radius - padding; // PrevPageButton
+    const x2 = this.canvas.width/2; // Label
+    const x3 = (this.canvas.width + labelWidth)/2 + radius + padding; // NextPageButton
+    const y = this.canvas.height - radius - padding;
+    const label = this.resource.currentItem + '/' + this.resource.totalItem;
+    const fontSize = 25;
+
+    ctx.save();
+    this.beforePageButton.draw(ctx, x1, y, radius);
+    this.nextPageButton.draw(ctx, x3, y, radius);
+    ctx.restore();
+
+    ctx.save();
+    ctx.font = fontSize + 'px Verdana';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x2, this.canvas.height - padding - fontSize / 2, labelWidth);
+    ctx.restore();
   }
 
   private drawRoundRectangle(ctx, x, y, width, height, radius, fill, stroke) {
@@ -374,6 +414,9 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     const localCfg = Object.assign({}, defaultCfg, cfg);
     if (cfg.buttonStyle) { localCfg.buttonStyle = Object.assign(defaultCfg.buttonStyle, cfg.buttonStyle); }
     if (cfg.tooltips) { localCfg.tooltips = Object.assign(defaultCfg.tooltips, cfg.tooltips); }
+    if (cfg.nextPageButton) { localCfg.nextPageButton = Object.assign(defaultCfg.nextPageButton, cfg.nextPageButton); }
+    if (cfg.beforePageButton) { localCfg.beforePageButton = Object.assign(defaultCfg.beforePageButton, cfg.beforePageButton); }
+    if (cfg.zoomOutButton) { localCfg.zoomOutButton = Object.assign(defaultCfg.zoomOutButton, cfg.zoomOutButton); }
     if (cfg.zoomOutButton) { localCfg.zoomOutButton = Object.assign(defaultCfg.zoomOutButton, cfg.zoomOutButton); }
     if (cfg.zoomInButton) { localCfg.zoomInButton = Object.assign(defaultCfg.zoomInButton, cfg.zoomInButton); }
     if (cfg.rotateLeftButton) { localCfg.rotateLeftButton = Object.assign(defaultCfg.rotateLeftButton, cfg.rotateLeftButton); }
@@ -388,7 +431,10 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private getUIElements(): Button[] {
-    return this.buttons;
+    const hoverElements = this.buttons.slice();
+    hoverElements.push(this.nextPageButton);
+    hoverElements.push(this.beforePageButton);
+    return hoverElements;
   }
 
   private getUIElement(pos: { x: number, y: number }) {

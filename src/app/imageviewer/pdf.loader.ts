@@ -10,33 +10,48 @@ declare var PDFJS;
 export class PdfResourceLoader extends ResourceLoader {
   private _pdf;
   private _page;
+  private _pendingReload;
 
   constructor() {
-    super();
     PDFJS.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (PDFJS as any).version }/pdf.worker.min.js`;
+    super();
     this.showItemsQuantity = true;
     this.loading = true;
   }
 
-  loadResource() {
+  setUp() {
     const loadingTask: any = PDFJS.getDocument(this.src);
     const vm = this;
-    loadingTask.promise.then(function (pdf) {
-      console.log('PDF loaded');
+    loadingTask.promise.then((pdf) => {
       vm._pdf = pdf;
       vm.totalItem = pdf.numPages;
-      vm._pdf.getPage(vm.currentItem).then(function (pdfPage) {
-        console.log('Page loaded');
-        vm._page = pdfPage;
-        vm.loadImage(() => {
-          vm.loaded = !!(vm._image && vm._image.width);
-          vm.loading = false;
-          vm.resourceChange.next();
-        });
-      });
-    }, function (reason) {
+      vm.loaded = true;
+      vm.loadResource();
+    }, (reason) => {
       // PDF loading error
       console.error(reason);
+    });
+  }
+
+  loadResource() {
+    if (!this.loaded) {
+      this._pendingReload = true;
+      return;
+    }
+    this.loaded = false;
+    const vm = this;
+    this._pdf.getPage(this.currentItem).then((pdfPage) => {
+      vm._page = pdfPage;
+      vm.loadImage(() => {
+        vm.loaded = true;
+        vm.loading = false;
+        if (vm._pendingReload) {
+          vm._pendingReload = false;
+          vm.loadResource();
+        } else {
+          vm.resourceChange.next();
+        }
+      });
     });
   }
 
