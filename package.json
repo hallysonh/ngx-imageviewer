@@ -9,6 +9,7 @@
   "repository": {
     "url": "https://github.com/hallysonh/ngx-imageviewer"
   },
+  "keywords": [ "image", "pdf", "viewer", "angular", "ng2", "ngx" ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -21,12 +22,13 @@
   "dependencies": {
     "hammerjs": "^2.0.8",
     "@types/pdf": "0.0.31",
-    "pdfjs-dist": "^2.0.142"
+    "pdfjs-dist": "^2.0.142",
+    "rxjs": "^5.5.0"
   },
   "peerDependencies": {
     "@angular/common": "^4.2.x",
     "@angular/core": "^4.2.x",
-    "rxjs": "^5.0.x",
+    "rxjs": "^5.5.0",
     "@types/pdf": "0.0.31",
     "pdfjs-dist": "^2.0.142"
   },

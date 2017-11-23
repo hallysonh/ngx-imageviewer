@@ -1,1 +1,1 @@
-export * from './src/app/imageviewer';
+export * from './src/app/imageviewer/imageviewer.module';

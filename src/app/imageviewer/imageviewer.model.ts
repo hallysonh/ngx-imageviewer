@@ -1,4 +1,5 @@
 import { ButtonConfig, ButtonStyle, ImageViewerConfig } from './imageviewer.config';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 export class Button {

@@ -1,4 +1,4 @@
-# Angular4 - Canvas Image Viewer
+# Angular 4 - Canvas Image Viewer
 
 This project generate a image viewer using canvas.
 
@@ -73,34 +73,44 @@ Use the follow code on your html:
 
 Optionaly, you can provide the fields `width` and `height`. If you omit those values, the width and height in the config object will be used.
 
+## Support PDF
+
+To support PDF files you must first include `pdfjs` by `yarn add pdfjs-dist` and add its reference in your `.angular-cli.json` file, like below:
+
+```json
+{
+  ...
+  "scripts": [
+    "../node_modules/pdfjs-dist/build/pdf.min.js"
+  ],
+  ...
+}
+```
+
 ## Custom Configuration
 
 Optionaly, you can provide a custom configuration like above:
 
 ```typescript
 import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from '@hallysonh/ngx-imageviewer';
-
-// ...
-
+...
 const MY_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
   buttonStyle: {
     bgStyle: '#B71C1C' // custom container's background style
   }
 };
-
-// ...
-
+...
 @Component({
-  // ...
+  ...
   providers: [
     {
       provide: IMAGEVIEWER_CONFIG,
       useValue: MY_IMAGEVIEWER_CONFIG
     }
   ]
-  // ...
+  ...
 })
-// ...
+...
 ```
 
 The default configuration available is:

@@ -1,7 +1,3 @@
-import * as pdfjs from 'pdfjs-dist/build/pdf';
-window['pdfjs-dist/build/pdf'] = pdfjs;
-import 'pdfjs-dist/web/pdf_viewer';
-
 import { ResourceLoader, Dimension, toSquareAngle } from "./imageviewer.model";
 import { ImageViewerConfig } from "./imageviewer.config";
 

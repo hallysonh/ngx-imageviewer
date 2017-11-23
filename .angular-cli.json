@@ -8,7 +8,8 @@
         "outDir": "dist",
         "assets": [
             "assets",
-            "favicon.ico"
+            "favicon.ico",
+            "pdf-test.pdf"
         ],
         "index": "index.html",
         "main": "main.ts",
@@ -20,7 +21,9 @@
         "styles": [
             "styles.scss"
         ],
-        "scripts": [],
+        "scripts": [
+          "../node_modules/pdfjs-dist/build/pdf.min.js"
+        ],
         "environmentSource": "environments/environment.ts",
         "environments": {
             "dev": "environments/environment.ts",
