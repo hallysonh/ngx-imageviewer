@@ -162,6 +162,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       });
       this.resource.setUp();
       this.resetImage();
+      if (this.context) { this.updateCanvas(); }
     }
   }
   //#endregion
@@ -284,7 +285,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private resetImage() {
-    this.dirty = this.resource.resetViewport(this.canvas);
+    this.resource.resetViewport(this.canvas);
+    this.dirty = true;
   }
   //#endregion
 
@@ -297,6 +299,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private render() {
+    const vm = this;
     // only re-render if dirty
     if (this.dirty) {
       this.dirty = false;
@@ -307,12 +310,14 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this.resource.draw(ctx, this.config, this.canvas, () => {
         ctx.restore();
 
-        // draw buttons
-        this.drawButtons(ctx);
+        if (vm.resource.loaded) {
+          // draw buttons
+          this.drawButtons(ctx);
 
-        // draw paginator
-        if (this.resource.showItemsQuantity) {
-          this.drawPaginator(ctx);
+          // draw paginator
+          if (this.resource.showItemsQuantity) {
+            this.drawPaginator(ctx);
+          }
         }
       });
     }

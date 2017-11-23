@@ -7,6 +7,7 @@ export class ImageViewerConfig {
   scaleStep?: number;
   rotateStepper?: boolean;
   buttonStyle?: ButtonStyle;
+  loadingMessage?: string;
   tooltips?: {
     enabled?: boolean,
     bgStyle?: string,
@@ -52,6 +53,7 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   bgStyle: '#ECEFF1', // component background style
   scaleStep: 0.1, // zoom scale step (using the zoom in/out buttons)
   rotateStepper: false,
+  loadingMessage: 'Loading...',
   buttonStyle: {
     iconFontFamily: 'Material Icons', // font used to render the button icons
     alpha: 0.5, // buttons' transparence value

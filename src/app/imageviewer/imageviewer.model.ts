@@ -123,18 +123,18 @@ export abstract class ResourceLoader {
   public currentItem = 1;
   public totalItem = 1;
   public showItemsQuantity = false;
+  public loaded = false;
+  public loading = false;
+  public rendering = false;
 
   protected _image;
-  protected loading = false;
-  protected loaded = false;
-  protected rendering = false;
   protected resourceChange = new Subject<string>();
 
   abstract setUp();
   abstract loadResource();
 
   public resetViewport(canvasDim: Dimension): boolean {
-    if (!this.loaded || !canvasDim) { return false; }
+    if (!this.loaded || !canvasDim) { return; }
 
     const rotation = this.viewport ? this.viewport.rotation : 0;
     const inverted = toSquareAngle(rotation) / 90 % 2 !== 0;
@@ -156,9 +156,6 @@ export abstract class ResourceLoader {
     this.viewport.height = this._image.height * this.viewport.scale;
     this.viewport.x = (canvasDim.width - this.viewport.width) / 2;
     this.viewport.y = (canvasDim.height - this.viewport.height) / 2;
-
-    // image changed
-    return true;
   }
 
   public draw(ctx, config: ImageViewerConfig, canvasDim: Dimension, onFinish) {
@@ -179,7 +176,7 @@ export abstract class ResourceLoader {
       ctx.fillStyle = '#333';
       ctx.font = '25px Verdana';
       ctx.textAlign = 'center';
-      ctx.fillText('Loading...', canvasDim.width / 2, canvasDim.height / 2);
+      ctx.fillText(config.loadingMessage || 'Loading...', canvasDim.width / 2, canvasDim.height / 2);
     }
 
     onFinish(ctx, config, canvasDim);
