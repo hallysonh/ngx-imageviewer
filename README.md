@@ -2,8 +2,6 @@
 
 This project generate a image viewer using canvas.
 
-This project used [@pfirpfel/image-viewer](https://github.com/pfirpfel/image-viewer) as reference.
-
 ## Features
 
 * Configurable
