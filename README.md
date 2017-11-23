@@ -8,6 +8,7 @@ This project used [@pfirpfel/image-viewer](https://github.com/pfirpfel/image-vie
 
 * Configurable
 * Resizeble component
+* Supports JPEG, PNG, GIF and **PDF**
 * Avaliable actions:
   * **Rotate**
   * **Zoom**
@@ -52,7 +53,21 @@ import 'hammerjs';
 
 ## Simplest use
 
-After import the module `ImageViewerModule`, use the follow code on your html:
+After import the module `ImageViewerModule`:
+
+```typescript
+import { ImageViewerModule } from '@hallysonh/ngx-imageviewer';
+
+@NgModule({
+  imports: [
+    ImageViewerModule
+  ]
+})
+export class AppModule { }
+
+```
+
+Use the follow code on your html:
 
 ```html
 <ngx-imageviewer [src]="imageSrc"></ngx-imageviewer>
@@ -123,7 +138,11 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     sortId: 0, // number used to determine the order of the buttons
     show: true // used to show/hide the button
   },
-  zoomInButton: new ButtonConfig('zoom_in', 'Zoom in', 1), // short button configuration
+
+  // short button configuration
+  nextPageButton: createButtonConfig('navigate_next', 'Next page', 0),
+  beforePageButton: createButtonConfig('navigate_before', 'Previous page', 1),
+  zoomInButton: new ButtonConfig('zoom_in', 'Zoom in', 1),
   rotateLeftButton: new ButtonConfig('rotate_left', 'Rotate left', 2),
   rotateRightButton: new ButtonConfig('rotate_right', 'Rotate right', 3),
   resetButton: new ButtonConfig('autorenew', 'Reset', 4)
