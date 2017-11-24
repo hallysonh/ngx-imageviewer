@@ -1,6 +1,6 @@
 {
   "name": "@hallysonh/ngx-imageviewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "author": {
     "name": "Hallyson Almeida",
@@ -21,13 +21,13 @@
   "private": false,
   "dependencies": {
     "hammerjs": "^2.0.8",
+    "rxjs": "^5.5.0",
     "@types/pdf": "0.0.31",
-    "pdfjs-dist": "^2.0.142",
-    "rxjs": "^5.5.0"
+    "pdfjs-dist": "^2.0.142"
   },
   "peerDependencies": {
-    "@angular/common": "^4.2.x",
-    "@angular/core": "^4.2.x",
+    "@angular/common": "^5.0.0",
+    "@angular/core": "^5.0.0",
     "rxjs": "^5.5.0",
     "@types/pdf": "0.0.31",
     "pdfjs-dist": "^2.0.142"
