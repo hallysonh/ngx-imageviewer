@@ -47,7 +47,9 @@ export function createButtonConfig(icon?: string, tooltip?: string, sortId: numb
   return { icon: icon, tooltip: tooltip, sortId: sortId, show: show }
 }
 
-export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
+export const IMAGEVIEWER_CONFIG = new InjectionToken<ImageViewerConfig>('imageviewer.config');
+
+export let IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   width: 800, // component default width
   height: 600, // component default height
   bgStyle: '#ECEFF1', // component background style
@@ -80,5 +82,3 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   rotateRightButton: createButtonConfig(String.fromCharCode(0xE41A), 'Rotate right', 3),
   resetButton: createButtonConfig(String.fromCharCode(0xE863), 'Reset', 4)
 };
-
-export const IMAGEVIEWER_CONFIG = new InjectionToken<ImageViewerConfig>('imageviewer.config');

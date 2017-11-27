@@ -1,4 +1,3 @@
-export * from './imageviewer.module';
-export * from './imageviewer.component';
-export * from './imageviewer.model';
-export * from './imageviewer.config';
+export { ImageViewerModule } from './imageviewer.module';
+export { ButtonConfig, ButtonStyle, createButtonConfig, ImageViewerConfig, IMAGEVIEWER_CONFIG } from './imageviewer.config';
+export { ImageViewerComponent } from './imageviewer.component';
