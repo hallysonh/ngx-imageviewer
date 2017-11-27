@@ -117,9 +117,6 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.canvas.width = this.width || this.config.width;
     this.canvas.height = this.height || this.config.height;
 
-    // setting resource
-    this.setUpResource();
-
     // setting buttons actions
     this.nextPageButton.onClick = (evt) => { this.nextPage(); return false; };
     this.beforePageButton.onClick = (evt) => { this.previousPage(); return false; };

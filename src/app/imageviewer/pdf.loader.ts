@@ -12,19 +12,19 @@ export class PdfResourceLoader extends ResourceLoader {
     PDFJS.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (PDFJS as any).version }/pdf.worker.min.js`;
     super();
     this.showItemsQuantity = true;
-    this.loading = true;
   }
 
   setUp() {
+    if (this.loading) { return; }
     const loadingTask: any = PDFJS.getDocument(this.src);
     const vm = this;
+    this.loading = true;
     loadingTask.promise.then((pdf) => {
       vm._pdf = pdf;
       vm.totalItem = pdf.numPages;
       vm.loaded = true;
       vm.loadResource();
     }, (reason) => {
-      // PDF loading error
       console.error(reason);
     });
   }
