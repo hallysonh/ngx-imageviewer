@@ -11,7 +11,8 @@ This project generate a image viewer using canvas.
   * **Rotate**
   * **Zoom**
   * Reset to maximize size
-  * Free moveble
+  * Free movable
+  * Change page (available just for PDF files)
 
 ## Demo
 
