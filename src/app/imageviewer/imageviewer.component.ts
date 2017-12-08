@@ -29,6 +29,20 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.setUpResource();
   }
 
+  private _filetype: string;
+  get filetype() {
+    return this._filetype;
+  }
+
+  @Input('filetype')
+  set filetype(value: string) {
+    if (value === this._filetype) {
+      return;
+    }
+    this._filetype = value;
+    this.setUpResource();
+  }
+
   private _width: number;
   get width() { return this._width; }
   @Input('width') set width(value) {
@@ -140,13 +154,13 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   setUpResource() {
-    if (isImage(this.src) && (!this.resource || !(this.resource instanceof ImageResourceLoader))) {
+    if (this.isImage(this.src) && (!this.resource || !(this.resource instanceof ImageResourceLoader))) {
       if(this.resourceChangeSub) {
         this.resourceChangeSub.unsubscribe();
       }
       this.resource = new ImageResourceLoader();
       this.resource.src = this.src;
-    } else if(isPdf(this.src) && (!this.resource || !(this.resource instanceof PdfResourceLoader))) {
+    } else if (this.isPdf(this.src) && (!this.resource || !(this.resource instanceof PdfResourceLoader))) {
       if(this.resourceChangeSub) {
         this.resourceChangeSub.unsubscribe();
       }
@@ -445,13 +459,16 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     });
     return (activeUIElement.length > 0) ? activeUIElement[0] : null;
   }
+
+  private isImage(url: string) {
+    if (this._filetype && this._filetype.toLowerCase() === "image") return true;
+    return url && url.match('\\.(png|jpg|jpeg|gif)|image/png') !== null;
+  }
+
+  private isPdf(url: string) {
+    if (this._filetype && this._filetype.toLowerCase() === "pdf") return true;
+    return url && url.indexOf('pdf') >= 0;
+  }
+
   //#endregion
-}
-
-function isImage(url: string) {
-  return url && url.match('\\.(png|jpg|jpeg|gif)|image/png') !== null;
-}
-
-function isPdf(url: string) {
-  return url && url.indexOf('pdf') >= 0;
 }
