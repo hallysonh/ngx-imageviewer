@@ -155,13 +155,13 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   setUpResource() {
     if (this.isImage(this.src) && (!this.resource || !(this.resource instanceof ImageResourceLoader))) {
-      if(this.resourceChangeSub) {
+      if (this.resourceChangeSub) {
         this.resourceChangeSub.unsubscribe();
       }
       this.resource = new ImageResourceLoader();
       this.resource.src = this.src;
     } else if (this.isPdf(this.src) && (!this.resource || !(this.resource instanceof PdfResourceLoader))) {
-      if(this.resourceChangeSub) {
+      if (this.resourceChangeSub) {
         this.resourceChangeSub.unsubscribe();
       }
       this.resource = new PdfResourceLoader();
@@ -256,7 +256,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   //#region Button Actions
 
   private nextPage() {
-    if(this.resource.currentItem >= this.resource.totalItem) { return; }
+    if (this.resource.currentItem >= this.resource.totalItem) { return; }
     if (this.resource.currentItem < 1) { this.resource.currentItem = 0; }
     this.resource.currentItem++;
     this.resource.loadResource();
@@ -264,7 +264,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private previousPage() {
-    if(this.resource.currentItem <= 1) { return; }
+    if (this.resource.currentItem <= 1) { return; }
     if (this.resource.currentItem > this.resource.totalItem) { this.resource.currentItem = this.resource.totalItem + 1; }
     this.resource.currentItem--;
     this.resource.loadResource();
@@ -380,9 +380,9 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     const padding = this.config.tooltips.padding;
     const radius = this.config.tooltips.radius;
     const labelWidth = 50;
-    const x1 = (this.canvas.width - labelWidth)/2 - radius - padding; // PrevPageButton
-    const x2 = this.canvas.width/2; // Label
-    const x3 = (this.canvas.width + labelWidth)/2 + radius + padding; // NextPageButton
+    const x1 = (this.canvas.width - labelWidth) / 2 - radius - padding; // PrevPageButton
+    const x2 = this.canvas.width / 2; // Label
+    const x3 = (this.canvas.width + labelWidth) / 2 + radius + padding; // NextPageButton
     const y = this.canvas.height - radius - padding;
     const label = this.resource.currentItem + '/' + this.resource.totalItem;
     const fontSize = 25;
@@ -461,12 +461,12 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private isImage(url: string) {
-    if (this._filetype && this._filetype.toLowerCase() === "image") return true;
+    if (this._filetype && this._filetype.toLowerCase() === 'image') { return true; }
     return url && url.match('\\.(png|jpg|jpeg|gif)|image/png') !== null;
   }
 
   private isPdf(url: string) {
-    if (this._filetype && this._filetype.toLowerCase() === "pdf") return true;
+    if (this._filetype && this._filetype.toLowerCase() === 'pdf') { return true; }
     return url && url.indexOf('pdf') >= 0;
   }
 

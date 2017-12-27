@@ -44,7 +44,7 @@ export interface ButtonConfig {
 }
 
 export function createButtonConfig(icon?: string, tooltip?: string, sortId: number = 0, show: boolean = true) {
-  return { icon: icon, tooltip: tooltip, sortId: sortId, show: show }
+  return { icon: icon, tooltip: tooltip, sortId: sortId, show: show };
 }
 
 export const IMAGEVIEWER_CONFIG = new InjectionToken<ImageViewerConfig>('imageviewer.config');

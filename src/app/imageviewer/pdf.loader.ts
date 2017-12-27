@@ -1,5 +1,5 @@
-import { ResourceLoader, Dimension, toSquareAngle } from "./imageviewer.model";
-import { ImageViewerConfig } from "./imageviewer.config";
+import { ResourceLoader, Dimension, toSquareAngle } from './imageviewer.model';
+import { ImageViewerConfig } from './imageviewer.config';
 
 declare var PDFJS;
 
@@ -60,15 +60,15 @@ export class PdfResourceLoader extends ResourceLoader {
     canvas.width = pageVp.width;
     canvas.height = pageVp.height;
 
-    var renderContext = {
+    const renderContext = {
       canvasContext: context,
       viewport: pageVp
     };
-    var renderTask = this._page.render(renderContext);
+    const renderTask = this._page.render(renderContext);
     renderTask.then(function () {
       canvas.toBlob(blob => {
-        var img = new Image();
-        img.onload = onFinish
+        const img = new Image();
+        img.onload = onFinish;
         img.src = URL.createObjectURL(blob);
         vm._image = img;
       });

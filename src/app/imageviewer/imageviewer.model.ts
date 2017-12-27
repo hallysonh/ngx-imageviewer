@@ -112,7 +112,7 @@ export class Viewport {
   ) {}
 }
 
-export interface Dimension { width: number, height: number }
+export interface Dimension { width: number; height: number; }
 
 export abstract class ResourceLoader {
   public src: string;
