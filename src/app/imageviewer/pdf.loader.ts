@@ -40,9 +40,12 @@ export class PdfResourceLoader extends ResourceLoader {
     }
     this.loaded = false;
     const vm = this;
-    this._pdf.getPage(this.currentItem).then((pdfPage) => {
+    const url = this.src;
+    const page = this.currentItem;
+
+    this._pdf.getPage(page).then((pdfPage) => {
       vm._page = pdfPage;
-      vm.loadImage(() => {
+      vm.loadImage(url, page, () => {
         vm.loaded = true;
         vm.loading = false;
         if (vm._pendingReload) {
@@ -55,10 +58,10 @@ export class PdfResourceLoader extends ResourceLoader {
     });
   }
 
-  private loadImage(onFinish: () => void) {
+  private loadImage(src: string, page:number, onFinish: () => void) {
     const vm = this;
 
-    if (this._resourceCache.getResource(this.src, this.currentItem)) {
+    if (this._resourceCache.getResource(src, page)) {
       const img = new Image();
       img.onload = onFinish;
       img.src = vm._resourceCache.getResource(vm.src, vm.currentItem);
@@ -83,7 +86,7 @@ export class PdfResourceLoader extends ResourceLoader {
         const img = new Image();
         img.onload = onFinish;
         img.src = URL.createObjectURL(blob);
-        vm._resourceCache.saveResource(vm.src, vm.currentItem, img.src);
+        vm._resourceCache.saveResource(src, page, img.src);
         vm._image = img;
       });
     });
