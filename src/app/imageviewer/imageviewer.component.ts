@@ -12,6 +12,7 @@ import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.m
 import { Subscription } from 'rxjs/Subscription';
 import { ImageResourceLoader } from './image.loader';
 import { PdfResourceLoader } from './pdf.loader';
+import { ResourceCacheService } from './resourcecache.service';
 
 const MIN_TOOLTIP_WIDTH_SPACE = 500;
 
@@ -50,7 +51,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   @Input('width') set width(value) {
     if (value === this._width) { return; }
     this._width = value;
-    if (this.canvas) { this.canvas.width = this._width; }
+    if (this._canvas) { this._canvas.width = this._width; }
     this.resetImage();
   }
 
@@ -59,7 +60,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   @Input('height') set height(value) {
     if (value === this._height) { return; }
     this._height = value;
-    if (this.canvas) { this.canvas.height = this._height; }
+    if (this._canvas) { this._canvas.height = this._height; }
     this.resetImage();
   }
 
@@ -68,36 +69,36 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   //#region Private properties
   // Canvas 2D context
-  private canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
+  private _canvas: HTMLCanvasElement;
+  private _context: CanvasRenderingContext2D;
 
   // dirty state
-  private dirty = true;
+  private _dirty = true;
 
   // action buttons
-  private nextPageButton: Button;
-  private beforePageButton: Button;
-  private zoomOutButton: Button;
-  private zoomInButton: Button;
-  private rotateLeftButton: Button;
-  private rotateRightButton: Button;
-  private resetButton: Button;
+  private _nextPageButton: Button;
+  private _beforePageButton: Button;
+  private _zoomOutButton: Button;
+  private _zoomInButton: Button;
+  private _rotateLeftButton: Button;
+  private _rotateRightButton: Button;
+  private _resetButton: Button;
 
   // contains all active buttons
-  private buttons = [];
+  private _buttons = [];
 
   // current tool tip (used to track change of tool tip)
-  private currentTooltip = null;
+  private _currentTooltip = null;
 
   // cached data when touch events started
-  private touchStartState: any = {};
+  private _touchStartState: any = {};
 
   // list of event listener destroyers
-  private listenDestroyList = [];
+  private _listenDestroyList = [];
 
   // image / Pdf Drawable Resource
-  private resource: ResourceLoader;
-  private resourceChangeSub: Subscription;
+  private _resource: ResourceLoader;
+  private _resourceChangeSub: Subscription;
 
   // Caching resourceLoader instances to reuse
   private _imageResource: ImageResourceLoader;
@@ -107,44 +108,45 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   //#region Lifecycle events
   constructor(
-    private sanitizer: DomSanitizer,
-    private renderer: Renderer,
+    private _sanitizer: DomSanitizer,
+    private _renderer: Renderer,
+    private _resourceCache: ResourceCacheService,
     @Inject(IMAGEVIEWER_CONFIG) private config: ImageViewerConfig
   ) {
     this.config = this.extendsDefaultConfig(config);
-    this.nextPageButton = new Button(this.config.nextPageButton, this.config.buttonStyle);
-    this.beforePageButton = new Button(this.config.beforePageButton, this.config.buttonStyle);
-    this.zoomOutButton = new Button(this.config.zoomOutButton, this.config.buttonStyle);
-    this.zoomInButton = new Button(this.config.zoomInButton, this.config.buttonStyle);
-    this.rotateLeftButton = new Button(this.config.rotateLeftButton, this.config.buttonStyle);
-    this.rotateRightButton = new Button(this.config.rotateRightButton, this.config.buttonStyle);
-    this.resetButton = new Button(this.config.resetButton, this.config.buttonStyle);
-    this.buttons = [
-      this.zoomOutButton,
-      this.zoomInButton,
-      this.rotateLeftButton,
-      this.rotateRightButton,
-      this.resetButton
+    this._nextPageButton = new Button(this.config.nextPageButton, this.config.buttonStyle);
+    this._beforePageButton = new Button(this.config.beforePageButton, this.config.buttonStyle);
+    this._zoomOutButton = new Button(this.config.zoomOutButton, this.config.buttonStyle);
+    this._zoomInButton = new Button(this.config.zoomInButton, this.config.buttonStyle);
+    this._rotateLeftButton = new Button(this.config.rotateLeftButton, this.config.buttonStyle);
+    this._rotateRightButton = new Button(this.config.rotateRightButton, this.config.buttonStyle);
+    this._resetButton = new Button(this.config.resetButton, this.config.buttonStyle);
+    this._buttons = [
+      this._zoomOutButton,
+      this._zoomInButton,
+      this._rotateLeftButton,
+      this._rotateRightButton,
+      this._resetButton
     ].filter(item => item.display)
       .sort((a, b) => a.sortId - b.sortId);
   }
 
   ngAfterViewInit() {
-    this.canvas = this.canvasRef.nativeElement;
-    this.context = this.canvas.getContext('2d');
+    this._canvas = this.canvasRef.nativeElement;
+    this._context = this._canvas.getContext('2d');
 
     // setting canvas dimention
-    this.canvas.width = this.width || this.config.width;
-    this.canvas.height = this.height || this.config.height;
+    this._canvas.width = this.width || this.config.width;
+    this._canvas.height = this.height || this.config.height;
 
     // setting buttons actions
-    this.nextPageButton.onClick = (evt) => { this.nextPage(); return false; };
-    this.beforePageButton.onClick = (evt) => { this.previousPage(); return false; };
-    this.zoomOutButton.onClick = (evt) => { this.zoomOut(); return false; };
-    this.zoomInButton.onClick = (evt) => { this.zoomIn(); return false; };
-    this.rotateLeftButton.onClick = (evt) => { this.rotateLeft(); return false; };
-    this.rotateRightButton.onClick = (evt) => { this.rotateRight(); return false; };
-    this.resetButton.onClick = (evt) => { this.resetImage(); return false; };
+    this._nextPageButton.onClick = (evt) => { this.nextPage(); return false; };
+    this._beforePageButton.onClick = (evt) => { this.previousPage(); return false; };
+    this._zoomOutButton.onClick = (evt) => { this.zoomOut(); return false; };
+    this._zoomInButton.onClick = (evt) => { this.zoomIn(); return false; };
+    this._rotateLeftButton.onClick = (evt) => { this.rotateLeft(); return false; };
+    this._rotateRightButton.onClick = (evt) => { this.rotateRight(); return false; };
+    this._resetButton.onClick = (evt) => { this.resetImage(); return false; };
 
     // register event listeners
     this.addEventListeners();
@@ -154,39 +156,40 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     // unregiste event listeners
-    this.listenDestroyList.forEach(listenDestroy => {
+    this._listenDestroyList.forEach(listenDestroy => {
       if (typeof listenDestroy === 'function') {
         listenDestroy();
       }
     });
+    this._resourceCache.disposeCache();
   }
 
   setUpResource() {
-    if (this.isImage(this.src) && (!this.resource || !(this.resource instanceof ImageResourceLoader))) {
-      if (this.resourceChangeSub) {
-        this.resourceChangeSub.unsubscribe();
+    if (this.isImage(this.src) && (!this._resource || !(this._resource instanceof ImageResourceLoader))) {
+      if (this._resourceChangeSub) {
+        this._resourceChangeSub.unsubscribe();
       }
       if (!this._imageResource) {
         this._imageResource = new ImageResourceLoader();
       }
-      this.resource = this._imageResource;
-    } else if (this.isPdf(this.src) && (!this.resource || !(this.resource instanceof PdfResourceLoader))) {
-      if (this.resourceChangeSub) {
-        this.resourceChangeSub.unsubscribe();
+      this._resource = this._imageResource;
+    } else if (this.isPdf(this.src) && (!this._resource || !(this._resource instanceof PdfResourceLoader))) {
+      if (this._resourceChangeSub) {
+        this._resourceChangeSub.unsubscribe();
       }
       if (!this._pdfResource) {
         this._pdfResource = new PdfResourceLoader(this._resourceCache);
       }
-      this.resource = this._pdfResource;
+      this._resource = this._pdfResource;
     }
-    if (this.resource) {
-      this.resource.src = this.src;
-      this.resourceChangeSub = this.resource.onResourceChange().subscribe(() => {
+    if (this._resource) {
+      this._resource.src = this.src;
+      this._resourceChangeSub = this._resource.onResourceChange().subscribe(() => {
         this.updateCanvas();
       });
-      this.resource.setUp();
+      this._resource.setUp();
       this.resetImage();
-      if (this.context) { this.updateCanvas(); }
+      if (this._context) { this.updateCanvas(); }
     }
   }
   //#endregion
@@ -198,43 +201,43 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   onTouchEnd() {
-    this.touchStartState.viewport = undefined;
-    this.touchStartState.scale = undefined;
-    this.touchStartState.rotate = undefined;
+    this._touchStartState.viewport = undefined;
+    this._touchStartState.scale = undefined;
+    this._touchStartState.rotate = undefined;
   }
 
   processTouchEvent(evt) {
     // process pan
-    if (!this.touchStartState.viewport) { this.touchStartState.viewport = Object.assign({}, this.resource.viewport); }
+    if (!this._touchStartState.viewport) { this._touchStartState.viewport = Object.assign({}, this._resource.viewport); }
 
-    const viewport = this.resource.viewport;
-    viewport.x = this.touchStartState.viewport.x + evt.deltaX;
-    viewport.y = this.touchStartState.viewport.y + evt.deltaY;
+    const viewport = this._resource.viewport;
+    viewport.x = this._touchStartState.viewport.x + evt.deltaX;
+    viewport.y = this._touchStartState.viewport.y + evt.deltaY;
 
     // process pinch in/out
-    if (!this.touchStartState.scale) { this.touchStartState.scale = this.resource.viewport.scale; }
-    const newScale = this.touchStartState.scale * evt.scale;
-    viewport.scale = newScale > this.resource.maxScale ? this.resource.maxScale :
-      newScale < this.resource.minScale ? this.resource.minScale : newScale;
+    if (!this._touchStartState.scale) { this._touchStartState.scale = this._resource.viewport.scale; }
+    const newScale = this._touchStartState.scale * evt.scale;
+    viewport.scale = newScale > this._resource.maxScale ? this._resource.maxScale :
+      newScale < this._resource.minScale ? this._resource.minScale : newScale;
 
     // process rotate left/right
-    if (!this.touchStartState.rotate) { this.touchStartState.rotate = { rotation: viewport.rotation, startRotate: evt.rotation }; }
+    if (!this._touchStartState.rotate) { this._touchStartState.rotate = { rotation: viewport.rotation, startRotate: evt.rotation }; }
     if (evt.rotation !== 0) {
-      const newAngle = this.touchStartState.rotate.rotation + evt.rotation - this.touchStartState.rotate.startRotate;
+      const newAngle = this._touchStartState.rotate.rotation + evt.rotation - this._touchStartState.rotate.startRotate;
       viewport.rotation = this.config.rotateStepper ? toSquareAngle(newAngle) : newAngle;
     }
-    this.dirty = true;
+    this._dirty = true;
   }
   //#endregion
 
   //#region Mouse Events
   private addEventListeners() {
     // zooming
-    this.listenDestroyList.push(this.renderer.listen(this.canvas, 'DOMMouseScroll', (evt) => this.onMouseWheel(evt)));
-    this.listenDestroyList.push(this.renderer.listen(this.canvas, 'mousewheel', (evt) => this.onMouseWheel(evt)));
+    this._listenDestroyList.push(this._renderer.listen(this._canvas, 'DOMMouseScroll', (evt) => this.onMouseWheel(evt)));
+    this._listenDestroyList.push(this._renderer.listen(this._canvas, 'mousewheel', (evt) => this.onMouseWheel(evt)));
 
     // show tooltip when mouseover it
-    this.listenDestroyList.push(this.renderer.listen(this.canvas, 'mousemove', (evt) =>
+    this._listenDestroyList.push(this._renderer.listen(this._canvas, 'mousemove', (evt) =>
       this.checkTooltipActivation(this.screenToCanvasCentre({ x: evt.clientX, y: evt.clientY }))
     ));
   }
@@ -252,71 +255,71 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   private checkTooltipActivation(pos: { x: number, y: number }) {
     this.getUIElements().forEach(x => x.hover = false);
     const activeElement = this.getUIElement(pos);
-    const oldToolTip = this.currentTooltip;
+    const oldToolTip = this._currentTooltip;
     if (activeElement !== null) {
       if (typeof activeElement.hover !== 'undefined') {
         activeElement.hover = true;
       }
       if (typeof activeElement.tooltip !== 'undefined') {
-        this.currentTooltip = activeElement.tooltip;
+        this._currentTooltip = activeElement.tooltip;
       }
     }
-    if (oldToolTip !== this.currentTooltip) { this.dirty = true; }
+    if (oldToolTip !== this._currentTooltip) { this._dirty = true; }
   }
   //#endregion
 
   //#region Button Actions
 
   private nextPage() {
-    if (!this.resource) { return; }
-    if (this.resource.currentItem >= this.resource.totalItem) { return; }
-    if (this.resource.currentItem < 1) { this.resource.currentItem = 0; }
-    this.resource.currentItem++;
-    this.resource.loadResource();
-    this.dirty = true;
+    if (!this._resource) { return; }
+    if (this._resource.currentItem >= this._resource.totalItem) { return; }
+    if (this._resource.currentItem < 1) { this._resource.currentItem = 0; }
+    this._resource.currentItem++;
+    this._resource.loadResource();
+    this._dirty = true;
   }
 
   private previousPage() {
-    if (!this.resource) { return; }
-    if (this.resource.currentItem <= 1) { return; }
-    if (this.resource.currentItem > this.resource.totalItem) { this.resource.currentItem = this.resource.totalItem + 1; }
-    this.resource.currentItem--;
-    this.resource.loadResource();
-    this.dirty = true;
+    if (!this._resource) { return; }
+    if (this._resource.currentItem <= 1) { return; }
+    if (this._resource.currentItem > this._resource.totalItem) { this._resource.currentItem = this._resource.totalItem + 1; }
+    this._resource.currentItem--;
+    this._resource.loadResource();
+    this._dirty = true;
   }
 
   private zoomIn() {
-    if (!this.resource) { return; }
-    const newScale = this.resource.viewport.scale * (1 + this.config.scaleStep);
-    this.resource.viewport.scale = newScale > this.resource.maxScale ? this.resource.maxScale : newScale;
-    this.dirty = true;
+    if (!this._resource) { return; }
+    const newScale = this._resource.viewport.scale * (1 + this.config.scaleStep);
+    this._resource.viewport.scale = newScale > this._resource.maxScale ? this._resource.maxScale : newScale;
+    this._dirty = true;
   }
 
   private zoomOut() {
-    if (!this.resource) { return; }
-    const newScale = this.resource.viewport.scale * (1 - this.config.scaleStep);
-    this.resource.viewport.scale = newScale < this.resource.minScale ? this.resource.minScale : newScale;
-    this.dirty = true;
+    if (!this._resource) { return; }
+    const newScale = this._resource.viewport.scale * (1 - this.config.scaleStep);
+    this._resource.viewport.scale = newScale < this._resource.minScale ? this._resource.minScale : newScale;
+    this._dirty = true;
   }
 
   private rotateLeft() {
-    if (!this.resource) { return; }
-    const viewport = this.resource.viewport;
+    if (!this._resource) { return; }
+    const viewport = this._resource.viewport;
     viewport.rotation = viewport.rotation === 0 ? 270 : viewport.rotation - 90;
-    this.dirty = true;
+    this._dirty = true;
   }
 
   private rotateRight() {
-    if (!this.resource) { return; }
-    const viewport = this.resource.viewport;
+    if (!this._resource) { return; }
+    const viewport = this._resource.viewport;
     viewport.rotation = viewport.rotation === 270 ? 0 : viewport.rotation + 90;
-    this.dirty = true;
+    this._dirty = true;
   }
 
   private resetImage() {
-    if (!this.resource) { return; }
-    this.resource.resetViewport(this.canvas);
-    this.dirty = true;
+    if (!this._resource) { return; }
+    this._resource.resetViewport(this._canvas);
+    this._dirty = true;
   }
   //#endregion
 
@@ -331,21 +334,21 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   private render() {
     const vm = this;
     // only re-render if dirty
-    if (this.dirty) {
-      this.dirty = false;
+    if (this._dirty) {
+      this._dirty = false;
 
-      const ctx = this.context;
+      const ctx = this._context;
       ctx.save();
 
-      this.resource.draw(ctx, this.config, this.canvas, () => {
+      this._resource.draw(ctx, this.config, this._canvas, () => {
         ctx.restore();
 
-        if (vm.resource.loaded) {
+        if (vm._resource.loaded) {
           // draw buttons
           this.drawButtons(ctx);
 
           // draw paginator
-          if (this.resource.showItemsQuantity) {
+          if (this._resource.showItemsQuantity) {
             this.drawPaginator(ctx);
           }
         }
@@ -358,30 +361,30 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     const padding = this.config.tooltips.padding;
     const radius = this.config.tooltips.radius;
     const gap = 2 * radius + padding;
-    const x = this.canvas.width - radius - padding;
-    const y = this.canvas.height - radius - padding;
+    const x = this._canvas.width - radius - padding;
+    const y = this._canvas.height - radius - padding;
 
     // draw buttons
-    for (let i = 0; i < this.buttons.length; i++) {
-      this.buttons[i].draw(ctx, x, y - gap * i, radius);
+    for (let i = 0; i < this._buttons.length; i++) {
+      this._buttons[i].draw(ctx, x, y - gap * i, radius);
     }
 
     // draw tooltip
-    if (this.currentTooltip !== null && this.canvas.width > MIN_TOOLTIP_WIDTH_SPACE) {
+    if (this._currentTooltip !== null && this._canvas.width > MIN_TOOLTIP_WIDTH_SPACE) {
       ctx.save();
       const fontSize = radius;
       ctx.font = fontSize + 'px sans-serif';
 
       // calculate position
-      const textSize = ctx.measureText(this.currentTooltip).width
+      const textSize = ctx.measureText(this._currentTooltip).width
         , rectWidth = textSize + padding
         , rectHeight = fontSize * 0.70 + padding
-        , rectX = this.canvas.width
+        , rectX = this._canvas.width
           - (2 * radius + 2 * padding) // buttons
           - rectWidth
-        , rectY = this.canvas.height - rectHeight - padding
+        , rectY = this._canvas.height - rectHeight - padding
         , textX = rectX + 0.5 * padding
-        , textY = this.canvas.height - 1.5 * padding;
+        , textY = this._canvas.height - 1.5 * padding;
 
       ctx.globalAlpha = this.config.tooltips.bgAlpha;
       ctx.fillStyle = this.config.tooltips.bgStyle;
@@ -389,7 +392,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
       ctx.globalAlpha = this.config.tooltips.textAlpha;
       ctx.fillStyle = this.config.tooltips.textStyle;
-      ctx.fillText(this.currentTooltip, textX, textY);
+      ctx.fillText(this._currentTooltip, textX, textY);
 
       ctx.restore();
     }
@@ -399,22 +402,22 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     const padding = this.config.tooltips.padding;
     const radius = this.config.tooltips.radius;
     const labelWidth = 50;
-    const x1 = (this.canvas.width - labelWidth) / 2 - radius - padding; // PrevPageButton
-    const x2 = this.canvas.width / 2; // Label
-    const x3 = (this.canvas.width + labelWidth) / 2 + radius + padding; // NextPageButton
-    const y = this.canvas.height - radius - padding;
-    const label = this.resource.currentItem + '/' + this.resource.totalItem;
+    const x1 = (this._canvas.width - labelWidth) / 2 - radius - padding; // PrevPageButton
+    const x2 = this._canvas.width / 2; // Label
+    const x3 = (this._canvas.width + labelWidth) / 2 + radius + padding; // NextPageButton
+    const y = this._canvas.height - radius - padding;
+    const label = this._resource.currentItem + '/' + this._resource.totalItem;
     const fontSize = 25;
 
     ctx.save();
-    this.beforePageButton.draw(ctx, x1, y, radius);
-    this.nextPageButton.draw(ctx, x3, y, radius);
+    this._beforePageButton.draw(ctx, x1, y, radius);
+    this._nextPageButton.draw(ctx, x3, y, radius);
     ctx.restore();
 
     ctx.save();
     ctx.font = fontSize + 'px Verdana';
     ctx.textAlign = 'center';
-    ctx.fillText(label, x2, this.canvas.height - padding - fontSize / 2, labelWidth);
+    ctx.fillText(label, x2, this._canvas.height - padding - fontSize / 2, labelWidth);
     ctx.restore();
   }
 
@@ -461,14 +464,14 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private screenToCanvasCentre(pos: { x: number, y: number }) {
-    const rect = this.canvas.getBoundingClientRect();
+    const rect = this._canvas.getBoundingClientRect();
     return { x: pos.x - rect.left, y: pos.y - rect.top };
   }
 
   private getUIElements(): Button[] {
-    const hoverElements = this.buttons.slice();
-    hoverElements.push(this.nextPageButton);
-    hoverElements.push(this.beforePageButton);
+    const hoverElements = this._buttons.slice();
+    hoverElements.push(this._nextPageButton);
+    hoverElements.push(this._beforePageButton);
     return hoverElements;
   }
 
