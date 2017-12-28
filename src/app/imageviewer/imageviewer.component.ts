@@ -334,7 +334,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   private render() {
     const vm = this;
     // only re-render if dirty
-    if (this._dirty) {
+    if (this._dirty && this._resource) {
       this._dirty = false;
 
       const ctx = this._context;
