@@ -9,7 +9,9 @@ export class PdfResourceLoader extends ResourceLoader {
   private _pendingReload;
 
   constructor() {
-    PDFJS.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (PDFJS as any).version }/pdf.worker.min.js`;
+    if (!PDFJS.workerSrc) {
+      PDFJS.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (PDFJS as any).version }/pdf.worker.min.js`;
+    }
     super();
     this.showItemsQuantity = true;
   }

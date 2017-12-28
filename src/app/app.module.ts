@@ -11,12 +11,14 @@ import { ImageViewerModule } from './imageviewer';
 import { AppComponent } from './app.component';
 import { SimpleUseComponent } from './routes/simpleuse/simpleuse.component';
 import { ParentSizeComponent } from './routes/parentsize/parentsize.component';
+import { IfTestComponent } from './routes/iftest/iftest.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SimpleUseComponent,
-    ParentSizeComponent
+    ParentSizeComponent,
+    IfTestComponent
   ],
   imports: [
     BrowserModule,

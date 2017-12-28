@@ -1,0 +1,12 @@
+<h2>Auto resizing with parent</h2>
+
+<div class="canvasForm">
+  <div>
+    <label>ngIf condition: </label>
+    <button (click)="toggleVisibility()">Toggle Visibility</button>
+    <button (click)="toggleUrl()">Toogle URL</button>
+    <button (click)="toggleBoth()">Toogle both</button>
+  </div>
+</div>
+
+<ngx-imageviewer *ngIf="condition" [src]="url"></ngx-imageviewer>
