@@ -13,6 +13,7 @@
     h1 {
       height: 40px;
       margin: 0;
+      white-space: nowrap;
     }
   }
 
@@ -25,6 +26,10 @@
       width: 300px;
       height: calc(100vh - 80px);
       background-color: #C5CAE9;
+
+      @media only screen and (max-width: 1200px) {
+        display: none;
+      }
 
       h2 {
         margin: 30px 0 0;

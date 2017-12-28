@@ -6,6 +6,7 @@
 
 h2 {
   margin-left: 20px;
+  white-space: nowrap;
 }
 
 .imagewrapper {
@@ -19,4 +20,10 @@ h2 {
   min-height: calc(100vh - 168px);
   height: calc(100vh - 168px);
   margin: 0 20px 20px;
+
+  @media only screen and (max-width: 1200px) {
+    max-width: calc(100vw - 40px);
+    min-width: calc(100vw - 40px);
+    width: calc(100vw - 40px);
+  }
 }
