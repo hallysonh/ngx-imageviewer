@@ -99,6 +99,10 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   private resource: ResourceLoader;
   private resourceChangeSub: Subscription;
 
+  // Caching resourceLoader instances to reuse
+  private _imageResource: ImageResourceLoader;
+  private _pdfResource: PdfResourceLoader;
+
   //#endregion
 
   //#region Lifecycle events
@@ -162,12 +166,18 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       if (this.resourceChangeSub) {
         this.resourceChangeSub.unsubscribe();
       }
-      this.resource = new ImageResourceLoader();
+      if (!this._imageResource) {
+        this._imageResource = new ImageResourceLoader();
+      }
+      this.resource = this._imageResource;
     } else if (this.isPdf(this.src) && (!this.resource || !(this.resource instanceof PdfResourceLoader))) {
       if (this.resourceChangeSub) {
         this.resourceChangeSub.unsubscribe();
       }
-      this.resource = new PdfResourceLoader();
+      if (!this._pdfResource) {
+        this._pdfResource = new PdfResourceLoader(this._resourceCache);
+      }
+      this.resource = this._pdfResource;
     }
     if (this.resource) {
       this.resource.src = this.src;
