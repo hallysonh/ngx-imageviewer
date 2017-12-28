@@ -144,6 +144,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
     // register event listeners
     this.addEventListeners();
+
+    this.updateCanvas();
   }
 
   ngOnDestroy() {
