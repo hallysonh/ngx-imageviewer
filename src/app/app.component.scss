@@ -1,11 +1,65 @@
 :host {
-    display: block;
-    .canvasForm {
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 20px 0;
-        &>div {
-            margin-bottom: 10px;
-        }
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+
+  header {
+    background-color: #673AB7;
+    padding: 20px;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+
+    h1 {
+      height: 40px;
+      margin: 0;
     }
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: row;
+
+    aside {
+      min-width: 300px;
+      width: 300px;
+      height: calc(100vh - 80px);
+      background-color: #C5CAE9;
+
+      h2 {
+        margin: 30px 0 0;
+        padding: 0 20px;
+        font-size: 20px;
+      }
+
+      ul {
+        list-style: none;
+        width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+
+        li a {
+          width: 100%;
+          padding: 10px 20px;
+          box-sizing: border-box;
+          display: block;
+          text-decoration: none;
+          color: #333;
+          transition: background-color 200ms linear;
+
+          &:hover {
+            background-color: #9FA8DA;
+          }
+        }
+      }
+    }
+
+    > section {
+      flex: 1;
+
+      > * {
+        margin: 0 auto;
+      }
+    }
+  }
 }
