@@ -26,9 +26,4 @@ export class IfTestComponent {
     this._currentIndex = this._currentIndex ? 0 : 1;
     this.url = URLS[this._currentIndex];
   }
-
-  toggleBoth() {
-    this.toggleUrl();
-    this.toggleVisibility();
-  }
 }
