@@ -13,6 +13,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { ImageResourceLoader } from './image.loader';
 import { PdfResourceLoader } from './pdf.loader';
 
+const MIN_TOOLTIP_WIDTH_SPACE = 500;
+
 @Component({
   selector: 'ngx-imageviewer',
   templateUrl: './imageviewer.component.html',
@@ -353,7 +355,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     }
 
     // draw tooltip
-    if (this.currentTooltip !== null) {
+    if (this.currentTooltip !== null && this.canvas.width > MIN_TOOLTIP_WIDTH_SPACE) {
       ctx.save();
       const fontSize = radius;
       ctx.font = fontSize + 'px sans-serif';
