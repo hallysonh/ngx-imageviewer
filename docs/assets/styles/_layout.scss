@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+h2 {
+  margin-left: 20px;
+}
+
+.canvasForm {
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+
+  &>div {
+    margin-bottom: 10px;
+  }
+
+  button {
+    margin-right: 10px;
+  }
+}
