@@ -159,15 +159,14 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         this.resourceChangeSub.unsubscribe();
       }
       this.resource = new ImageResourceLoader();
-      this.resource.src = this.src;
     } else if (this.isPdf(this.src) && (!this.resource || !(this.resource instanceof PdfResourceLoader))) {
       if (this.resourceChangeSub) {
         this.resourceChangeSub.unsubscribe();
       }
       this.resource = new PdfResourceLoader();
-      this.resource.src = this.src;
     }
     if (this.resource) {
+      this.resource.src = this.src;
       this.resourceChangeSub = this.resource.onResourceChange().subscribe(() => {
         this.updateCanvas();
       });
@@ -238,7 +237,6 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   private checkTooltipActivation(pos: { x: number, y: number }) {
     this.getUIElements().forEach(x => x.hover = false);
-
     const activeElement = this.getUIElement(pos);
     const oldToolTip = this.currentTooltip;
     if (activeElement !== null) {
@@ -256,6 +254,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   //#region Button Actions
 
   private nextPage() {
+    if (!this.resource) { return; }
     if (this.resource.currentItem >= this.resource.totalItem) { return; }
     if (this.resource.currentItem < 1) { this.resource.currentItem = 0; }
     this.resource.currentItem++;
@@ -264,6 +263,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private previousPage() {
+    if (!this.resource) { return; }
     if (this.resource.currentItem <= 1) { return; }
     if (this.resource.currentItem > this.resource.totalItem) { this.resource.currentItem = this.resource.totalItem + 1; }
     this.resource.currentItem--;
@@ -272,30 +272,35 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   private zoomIn() {
+    if (!this.resource) { return; }
     const newScale = this.resource.viewport.scale * (1 + this.config.scaleStep);
     this.resource.viewport.scale = newScale > this.resource.maxScale ? this.resource.maxScale : newScale;
     this.dirty = true;
   }
 
   private zoomOut() {
+    if (!this.resource) { return; }
     const newScale = this.resource.viewport.scale * (1 - this.config.scaleStep);
     this.resource.viewport.scale = newScale < this.resource.minScale ? this.resource.minScale : newScale;
     this.dirty = true;
   }
 
   private rotateLeft() {
+    if (!this.resource) { return; }
     const viewport = this.resource.viewport;
     viewport.rotation = viewport.rotation === 0 ? 270 : viewport.rotation - 90;
     this.dirty = true;
   }
 
   private rotateRight() {
+    if (!this.resource) { return; }
     const viewport = this.resource.viewport;
     viewport.rotation = viewport.rotation === 270 ? 0 : viewport.rotation + 90;
     this.dirty = true;
   }
 
   private resetImage() {
+    if (!this.resource) { return; }
     this.resource.resetViewport(this.canvas);
     this.dirty = true;
   }
