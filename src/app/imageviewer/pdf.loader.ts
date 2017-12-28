@@ -58,7 +58,7 @@ export class PdfResourceLoader extends ResourceLoader {
     });
   }
 
-  private loadImage(src: string, page:number, onFinish: () => void) {
+  private loadImage(src: string, page: number, onFinish: () => void) {
     const vm = this;
 
     if (this._resourceCache.getResource(src, page)) {

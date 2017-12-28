@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 const URLS = [
   'https://hallysonh.github.io/ngx-imageviewer/pdf-test.pdf',
   'https://hallysonh.github.io/ngx-imageviewer//assets/imgs/sample-1.jpg'
-]
+];
 
 @Component({
   selector: 'ngx-iftest',

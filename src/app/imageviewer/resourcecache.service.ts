@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-interface CacheDef {
+export interface CacheDef {
   url: string;
   page: number;
   resource: string;
@@ -9,7 +9,7 @@ interface CacheDef {
 @Injectable()
 export class ResourceCacheService {
 
-  private _cache: CacheDef[] = []
+  private _cache: CacheDef[] = [];
 
   constructor() {}
 
