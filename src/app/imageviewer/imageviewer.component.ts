@@ -484,12 +484,12 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   private isImage(url: string) {
     if (this._filetype && this._filetype.toLowerCase() === 'image') { return true; }
-    return url && url.match('\\.(png|jpg|jpeg|gif)|image/png') !== null;
+    return url && url.toLowerCase().match('\\.(png|jpg|jpeg|gif)|image/png') !== null;
   }
 
   private isPdf(url: string) {
     if (this._filetype && this._filetype.toLowerCase() === 'pdf') { return true; }
-    return url && url.indexOf('pdf') >= 0;
+    return url && url.toLowerCase().indexOf('pdf') >= 0;
   }
 
   //#endregion
