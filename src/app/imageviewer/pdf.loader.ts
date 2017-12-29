@@ -18,7 +18,7 @@ export class PdfResourceLoader extends ResourceLoader {
   }
 
   setUp() {
-    if (this.loading) { return; }
+    if (this.loading || !this.src) { return; }
     const loadingTask: any = PDFJS.getDocument(this.src);
     const vm = this;
     this.loading = true;
