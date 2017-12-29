@@ -9,7 +9,14 @@
   "repository": {
     "url": "https://github.com/hallysonh/ngx-imageviewer"
   },
-  "keywords": [ "image", "pdf", "viewer", "angular", "ng2", "ngx" ],
+  "keywords": [
+    "image",
+    "pdf",
+    "viewer",
+    "angular",
+    "ng2",
+    "ngx"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -20,34 +27,31 @@
   },
   "private": false,
   "dependencies": {
+    "@angular/animations": "^5.0.0",
+    "@angular/common": "^5.0.0",
+    "@angular/compiler": "^5.0.0",
+    "@angular/core": "^5.0.0",
+    "@angular/platform-browser": "^5.0.0",
+    "@angular/platform-browser-dynamic": "^5.0.0",
     "hammerjs": "^2.0.8",
-    "rxjs": "^5.5.0",
-    "@types/pdf": "0.0.31",
-    "pdfjs-dist": "^2.0.142"
+    "pdfjs-dist": "^2.0.142",
+    "rxjs": "^5.5.0"
   },
   "peerDependencies": {
-    "@angular/common": "^5.0.0",
-    "@angular/core": "^5.0.0",
-    "rxjs": "^5.5.0",
-    "@types/pdf": "0.0.31",
+    "hammerjs": "^2.0.8",
     "pdfjs-dist": "^2.0.142"
   },
   "devDependencies": {
-    "@angular/animations": "^5.0.0",
     "@angular/cli": "^1.6.2",
-    "@angular/common": "^5.0.0",
-    "@angular/compiler": "^5.0.0",
     "@angular/compiler-cli": "^5.0.0",
-    "@angular/core": "^5.0.0",
     "@angular/forms": "^5.0.0",
     "@angular/http": "^5.0.0",
     "@angular/language-service": "^5.0.0",
-    "@angular/platform-browser": "^5.0.0",
-    "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
     "@types/jasmine": "~2.8.2",
     "@types/jasminewd2": "~2.0.2",
-    "@types/node": "^8.0.53",
+    "@types/node": "6.0.88",
+    "@types/pdf": "0.0.31",
     "codelyzer": "~4.0.1",
     "core-js": "^2.4.1",
     "del-cli": "^1.1.0",
@@ -61,10 +65,9 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "ng-packagr": "^1.6.0",
     "protractor": "~5.2.0",
-    "rxjs": "^5.5.0",
     "ts-node": "~3.3.0",
     "tslint": "~5.8.0",
-    "typescript": "2.4.2",
+    "typescript": "2.5.x",
     "zone.js": "^0.8.4"
   }
 }
