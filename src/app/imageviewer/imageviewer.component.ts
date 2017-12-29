@@ -12,7 +12,7 @@ import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.m
 import { Subscription } from 'rxjs/Subscription';
 import { ImageResourceLoader } from './image.loader';
 import { PdfResourceLoader } from './pdf.loader';
-import { ResourceCacheService } from './resourcecache.service';
+import { ImageCacheService } from './imagecache.service';
 
 const MIN_TOOLTIP_WIDTH_SPACE = 500;
 
@@ -110,7 +110,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   constructor(
     private _sanitizer: DomSanitizer,
     private _renderer: Renderer,
-    private _resourceCache: ResourceCacheService,
+    private _imageCache: ImageCacheService,
     @Inject(IMAGEVIEWER_CONFIG) private config: ImageViewerConfig
   ) {
     this.config = this.extendsDefaultConfig(config);
@@ -161,7 +161,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         listenDestroy();
       }
     });
-    this._resourceCache.disposeCache();
+    this._imageCache.disposeCache();
   }
 
   setUpResource() {
@@ -178,7 +178,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         this._resourceChangeSub.unsubscribe();
       }
       if (!this._pdfResource) {
-        this._pdfResource = new PdfResourceLoader(this._resourceCache);
+        this._pdfResource = new PdfResourceLoader(this._imageCache);
       }
       this._resource = this._pdfResource;
     }

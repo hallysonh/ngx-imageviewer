@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 export interface CacheDef {
   url: string;
   page: number;
-  resource: string;
+  image: any;
 }
 
 @Injectable()
-export class ResourceCacheService {
+export class ImageCacheService {
 
   private _cache: CacheDef[] = [];
 
@@ -21,22 +21,22 @@ export class ResourceCacheService {
     return this.cache.find(i => i.url === url && i.page === page);
   }
 
-  getResource(url: string, page: number) {
+  getImage(url: string, page: number) {
     const c = this.getCache(url, page);
-    return c ? c.resource : null;
+    return c ? c.image : null;
   }
 
-  saveResource(url: string, page: number, resource: string) {
+  saveImage(url: string, page: number, image: any) {
     const cache = this.getCache(url, page);
     if (cache) {
-      cache.resource = resource;
+      cache.image = image;
     } else {
-      this.cache.push({ url, page, resource });
+      this.cache.push({ url, page, image });
     }
   }
 
   disposeCache() {
-    this.cache.forEach(i => URL.revokeObjectURL(i.resource));
+    this.cache.forEach(i => URL.revokeObjectURL(i.image.src));
     this._cache = [];
   }
 }

@@ -1,4 +1,4 @@
-import { ResourceCacheService } from './resourcecache.service';
+import { ImageCacheService } from './imagecache.service';
 import { ResourceLoader, Dimension, toSquareAngle } from './imageviewer.model';
 import { ImageViewerConfig } from './imageviewer.config';
 
@@ -9,7 +9,7 @@ export class PdfResourceLoader extends ResourceLoader {
   private _page;
   private _pendingReload;
 
-  constructor(private _resourceCache: ResourceCacheService) {
+  constructor(private _imageCache: ImageCacheService) {
     super();
     if (!PDFJS.workerSrc) {
       PDFJS.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(PDFJS as any).version}/pdf.worker.min.js`;
@@ -60,12 +60,10 @@ export class PdfResourceLoader extends ResourceLoader {
 
   private loadImage(src: string, page: number, onFinish: () => void) {
     const vm = this;
-
-    if (this._resourceCache.getResource(src, page)) {
-      const img = new Image();
-      img.onload = onFinish;
-      img.src = vm._resourceCache.getResource(vm.src, vm.currentItem);
-      vm._image = img;
+    const cacheimg = this._imageCache.getImage(src, page);
+    if (cacheimg) {
+      vm._image = cacheimg;
+      onFinish();
       return;
     }
 
@@ -86,7 +84,7 @@ export class PdfResourceLoader extends ResourceLoader {
         const img = new Image();
         img.onload = onFinish;
         img.src = URL.createObjectURL(blob);
-        vm._resourceCache.saveResource(src, page, img.src);
+        vm._imageCache.saveImage(src, page, img);
         vm._image = img;
       });
     });
