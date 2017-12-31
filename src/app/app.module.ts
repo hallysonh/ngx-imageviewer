@@ -12,13 +12,15 @@ import { AppComponent } from './app.component';
 import { SimpleUseComponent } from './routes/simpleuse/simpleuse.component';
 import { ParentSizeComponent } from './routes/parentsize/parentsize.component';
 import { IfTestComponent } from './routes/iftest/iftest.component';
+import { SourceFileComponent } from './routes/sourcefile/sourcefile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SimpleUseComponent,
     ParentSizeComponent,
-    IfTestComponent
+    IfTestComponent,
+    SourceFileComponent
   ],
   imports: [
     BrowserModule,
