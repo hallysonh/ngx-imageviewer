@@ -1,4 +1,4 @@
-# Angular 4 - Canvas Image Viewer
+# Angular 5 - Canvas Image Viewer
 
 This project generate a image viewer using canvas.
 
