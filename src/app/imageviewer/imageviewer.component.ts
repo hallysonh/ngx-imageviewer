@@ -24,7 +24,7 @@ const MIN_TOOLTIP_WIDTH_SPACE = 500;
 export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   //#region Input properties
-  private _src: string;
+  private _src: string | File;
   get src() { return this._src; }
   @Input('src') set src(value) {
     if (value === this._src) { return; }
@@ -32,16 +32,11 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.setUpResource();
   }
 
+  // FIX not workign properly
   private _filetype: string;
-  get filetype() {
-    return this._filetype;
-  }
-
-  @Input('filetype')
-  set filetype(value: string) {
-    if (value === this._filetype) {
-      return;
-    }
+  get filetype() { return this._filetype; }
+  @Input('filetype') set filetype(value: string) {
+    if (value === this._filetype) { return; }
     this._filetype = value;
     this.setUpResource();
   }
@@ -183,9 +178,12 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this._resource = this._pdfResource;
     }
     if (this._resource) {
-      this._resource.src = this.src;
+      this._resource.src = this.src instanceof File ? URL.createObjectURL(this.src) : this.src;
       this._resourceChangeSub = this._resource.onResourceChange().subscribe(() => {
         this.updateCanvas();
+        if (this.src instanceof File) {
+          URL.revokeObjectURL(this._resource.src);
+        }
       });
       this._resource.setUp();
       this.resetImage();
@@ -482,15 +480,20 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     return (activeUIElement.length > 0) ? activeUIElement[0] : null;
   }
 
-  private isImage(url: string) {
+  private isImage(file: string | File) {
     if (this._filetype && this._filetype.toLowerCase() === 'image') { return true; }
-    return url && url.toLowerCase().match('\\.(png|jpg|jpeg|gif)|image/png') !== null;
+    return testFile(file, '\\.(png|jpg|jpeg|gif)|image/png');
   }
 
-  private isPdf(url: string) {
+  private isPdf(file: string | File) {
     if (this._filetype && this._filetype.toLowerCase() === 'pdf') { return true; }
-    return url && url.toLowerCase().indexOf('pdf') >= 0;
+    return testFile(file, '\\.(pdf)|application/pdf');
   }
-
   //#endregion
+}
+
+function testFile(file: string | File, regexTest: string) {
+  if (!file) { return false; }
+  const name = file instanceof File ? file.name : file;
+  return name.toLowerCase().match(regexTest) !== null;
 }

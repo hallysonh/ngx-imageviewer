@@ -7,6 +7,7 @@ This project generate a image viewer using canvas.
 * Configurable
 * Resizeble component
 * Supports JPEG, PNG, GIF and **PDF**
+* Support File Objects
 * Avaliable actions:
   * **Rotate**
   * **Zoom**
