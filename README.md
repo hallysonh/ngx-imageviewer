@@ -91,7 +91,7 @@ To support PDF files you must first include `pdfjs` by `yarn add pdfjs-dist` and
 
 ## Custom Configuration
 
-Optionaly, you can provide a custom configuration like above:
+Optionaly, you can provide a custom configuration like below:
 
 ```typescript
 import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from '@hallysonh/ngx-imageviewer';
