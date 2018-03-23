@@ -1,5 +1,22 @@
-<canvas #imageContainer [width]="width" [height]="height"
-  (tap)="onTap($event)" (pinchin)="processTouchEvent($event)" (pinchout)="processTouchEvent($event)"
-  (panmove)="processTouchEvent($event)" (panend)="onTouchEnd()" (rotatemove)="processTouchEvent($event)"
-    (rotateend)="onTouchEnd()">
-</canvas>
+<ng-container *ngIf="_isHammerPreset">
+  <canvas
+    (panend)="onTouchEnd()"
+    (panmove)="processTouchEvent($event)"
+    (pinchin)="processTouchEvent($event)"
+    (pinchout)="processTouchEvent($event)"
+    (rotateend)="onTouchEnd()"
+    (rotatemove)="processTouchEvent($event)"
+    (tap)="onTap($event)"
+    [height]="height"
+    [width]="width"
+    #imageContainer
+  ></canvas>
+</ng-container>
+
+<ng-container *ngIf="!_isHammerPreset">
+  <canvas
+    [height]="height"
+    [width]="width"
+    #imageContainer
+  ></canvas>
+</ng-container>
