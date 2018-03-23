@@ -99,6 +99,9 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   private _imageResource: ImageResourceLoader;
   private _pdfResource: PdfResourceLoader;
 
+  // Dependencies
+  private _isHammerPreset: boolean;
+
   //#endregion
 
   //#region Lifecycle events
@@ -109,6 +112,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     @Inject(IMAGEVIEWER_CONFIG) private config: ImageViewerConfig
   ) {
     this.config = this.extendsDefaultConfig(config);
+    this._isHammerPreset = typeof window['Hammer'] !== 'undefined';
     this._nextPageButton = new Button(this.config.nextPageButton, this.config.buttonStyle);
     this._beforePageButton = new Button(this.config.beforePageButton, this.config.buttonStyle);
     this._zoomOutButton = new Button(this.config.zoomOutButton, this.config.buttonStyle);
