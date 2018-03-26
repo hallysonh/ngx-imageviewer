@@ -9,7 +9,7 @@ import {
   ButtonStyle
 } from './imageviewer.config';
 import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.model';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ImageResourceLoader } from './image.loader';
 import { PdfResourceLoader } from './pdf.loader';
 import { ImageCacheService } from './imagecache.service';
