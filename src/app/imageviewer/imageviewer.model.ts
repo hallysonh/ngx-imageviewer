@@ -1,6 +1,5 @@
 import { ButtonConfig, ButtonStyle, ImageViewerConfig } from './imageviewer.config';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
 
 export class Button {
   //#region Properties
@@ -10,7 +9,7 @@ export class Button {
   tooltip: string;
 
   // hover state
-  hover = false;
+  hover:  (() => boolean) | boolean = false;
 
   // show/hide button
   display = true;
