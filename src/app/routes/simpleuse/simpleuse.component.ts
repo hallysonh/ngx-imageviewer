@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {ImageViewerComponent} from '../../imageviewer/imageviewer.component';
+import {ImageButtonEventsTriggerService} from '../../imageviewer/image-button-events-trigger.service';
 
 @Component({
   selector: 'ngx-simpleuse',
@@ -20,5 +22,27 @@ export class SimpleUseComponent {
   canvasHeight = 600;
   imageSrc = this.samples[0].url;
 
-  constructor() { }
+  constructor(private imageButtonEventsTrigger: ImageButtonEventsTriggerService) {
+
+  }
+
+  zoomIn () {
+    this.imageButtonEventsTrigger.emitZoomIn();
+  }
+
+  zoomOut () {
+    this.imageButtonEventsTrigger.emitZoomOut();
+  }
+
+  rotateRight () {
+    this.imageButtonEventsTrigger.emitRotateRight();
+  }
+
+  rotateLeft () {
+    this.imageButtonEventsTrigger.emitRotateLeft();
+  }
+
+  resetImage () {
+    this.imageButtonEventsTrigger.emitResetImage();
+  }
 }
