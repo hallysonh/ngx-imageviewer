@@ -1,5 +1,4 @@
-import { ResourceLoader, Dimension, toSquareAngle } from './imageviewer.model';
-import { ImageViewerConfig } from './imageviewer.config';
+import {ResourceLoader} from './imageviewer.model';
 
 export class ImageResourceLoader extends ResourceLoader {
 

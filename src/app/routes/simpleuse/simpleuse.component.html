@@ -16,5 +16,24 @@
     <button *ngFor="let s of samples; let i = index" (click)="imageSrc = s.url">{{ s.label }}</button>
   </div>
 </div>
+<div>
+  <label>Zoom in </label>
+  <button (click)="zoomIn()">zoom in</button>
+</div>
+<div>
+  <label>Zoom out </label>
+  <button (click)="zoomOut()">zoom in</button>
+</div>
+<div>
+  <label>Rotate right </label>
+  <button (click)="rotateRight()">zoom in</button>
+</div>
+<div>
+  <label>Rotate left </label>
+  <button (click)="rotateLeft()">zoom in</button>
+</div><div>
+  <label>Reset </label>
+  <button (click)="resetImage()">zoom in</button>
+</div>
 
-<ngx-imageviewer [src]="imageSrc" [width]="canvasWidth" [height]="canvasHeight"></ngx-imageviewer>
+<ngx-imageviewer #viewer [src]="imageSrc" [width]="canvasWidth" [height]="canvasHeight"></ngx-imageviewer>

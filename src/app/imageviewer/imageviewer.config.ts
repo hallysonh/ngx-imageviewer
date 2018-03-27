@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import {InjectionToken} from '@angular/core';
 
 export class ImageViewerConfig {
   width?: number;
@@ -17,6 +17,7 @@ export class ImageViewerConfig {
     padding?: number,
     radius?: number
   };
+  drawButtons: boolean;
   nextPageButton?: ButtonConfig;
   beforePageButton?: ButtonConfig;
   zoomOutButton?: ButtonConfig;
@@ -44,7 +45,7 @@ export interface ButtonConfig {
 }
 
 export function createButtonConfig(icon?: string, tooltip?: string, sortId: number = 0, show: boolean = true) {
-  return { icon: icon, tooltip: tooltip, sortId: sortId, show: show };
+  return {icon: icon, tooltip: tooltip, sortId: sortId, show: show};
 }
 
 export const IMAGEVIEWER_CONFIG = new InjectionToken<ImageViewerConfig>('imageviewer.config');
@@ -66,7 +67,7 @@ export let IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     borderWidth: 0 // buttons' border width (0 == disabled)
   },
   tooltips: {
-    enabled: true, // enable or disable tooltips for buttons
+    enabled: false, // enable or disable tooltips for buttons
     bgStyle: '#000000', // tooltip background style
     bgAlpha: 0.5, // tooltip background transparence
     textStyle: '#ffffff', // tooltip's text style
@@ -74,6 +75,7 @@ export let IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     padding: 15, // tooltip padding
     radius: 20 // tooltip border radius
   },
+  drawButtons: false,
   nextPageButton: createButtonConfig(String.fromCharCode(0xE409), 'Next page', 0),
   beforePageButton: createButtonConfig(String.fromCharCode(0xE408), 'Previous page', 1),
   zoomOutButton: createButtonConfig(String.fromCharCode(0xE900), 'Zoom out', 0),
