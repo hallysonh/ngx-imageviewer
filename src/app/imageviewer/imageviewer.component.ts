@@ -8,7 +8,7 @@ import {
   ButtonConfig,
   ButtonStyle
 } from './imageviewer.config';
-import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.model';
+import { Viewport, Button, toSquareAngle, ResourceLoader, ResourceLoadState } from './imageviewer.model';
 import { Subscription } from 'rxjs/Subscription';
 import { ImageResourceLoader } from './image.loader';
 import { PdfResourceLoader } from './pdf.loader';
@@ -341,7 +341,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this._resource.draw(ctx, this.config, this._canvas, () => {
         ctx.restore();
 
-        if (vm._resource.loaded) {
+        if (vm._resource.loadState === ResourceLoadState.Loaded) {
           // draw buttons
           this.drawButtons(ctx);
 
