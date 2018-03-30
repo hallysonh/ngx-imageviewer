@@ -182,7 +182,8 @@ export abstract class ResourceLoader {
         break;
       case ResourceLoadState.Failed: {
         const msg = config.loadingErrorMessage || IMAGEVIEWER_CONFIG_DEFAULT.loadingErrorMessage;
-        this.drawCenteredText(ctx, config, canvasDim, msg);
+        const isError = true;
+        this.drawCenteredText(ctx, config, canvasDim, msg, isError);
         break;
       }
       case ResourceLoadState.Loading: {
@@ -201,10 +202,16 @@ export abstract class ResourceLoader {
     ctx: CanvasRenderingContext2D,
     config: ImageViewerConfig,
     canvasDim: Dimension,
-    message: string
+    message: string,
+    isError = false,
   ) {
-    ctx.fillStyle = '#333';
-    ctx.font = '25px Verdana';
+    const color = config.messageStyle.color || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.color;
+    const errorColor = config.messageStyle.errorColor || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.errorColor;
+    const fontSize = config.messageStyle.fontSize || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.fontSize;
+    const fontFamily = config.messageStyle.fontFamily || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.fontFamily;
+
+    ctx.fillStyle = isError ? errorColor : color;
+    ctx.font = `${fontSize}px ${fontFamily}`;
     ctx.textAlign = 'center';
     ctx.fillText(message, canvasDim.width / 2, canvasDim.height / 2);
   }

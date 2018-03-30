@@ -9,6 +9,7 @@ export class ImageViewerConfig {
   buttonStyle?: ButtonStyle;
   loadingMessage?: string;
   loadingErrorMessage?: string;
+  messageStyle?: MessageStyle;
   tooltips?: {
     enabled?: boolean,
     bgStyle?: string,
@@ -25,6 +26,13 @@ export class ImageViewerConfig {
   rotateLeftButton?: ButtonConfig;
   rotateRightButton?: ButtonConfig;
   resetButton?: ButtonConfig;
+}
+
+export interface MessageStyle {
+  color?: string;
+  errorColor?: string;
+  fontFamily?: string;
+  fontSize?: number;
 }
 
 export interface ButtonStyle {
@@ -58,6 +66,12 @@ export let IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   rotateStepper: false,
   loadingMessage: 'Loading...',
   loadingErrorMessage: 'Whoops, something bad happend.',
+  messageStyle: {
+    color: '#333',
+    errorColor: 'red',
+    fontSize: 25,
+    fontFamily: 'Verdana, Geneva, sans-serif', // fonts for text messages
+  },
   buttonStyle: {
     iconFontFamily: 'Material Icons', // font used to render the button icons
     alpha: 0.5, // buttons' transparence value

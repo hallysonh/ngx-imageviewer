@@ -9,6 +9,10 @@ export const MY_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
   rotateLeftButton: { tooltip: 'Girar esquerda' },
   rotateRightButton: { tooltip: 'Girar direita' },
   resetButton: { tooltip: 'Resetar' },
+  messageStyle: {
+    fontSize: 20,
+    color: 'green',
+  },
   buttonStyle: {
     bgStyle: '#B71C1C',
     borderWidth: 2,
