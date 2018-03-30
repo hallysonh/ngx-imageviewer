@@ -1,0 +1,30 @@
+<h2>Custom Emitters</h2>
+<div class="pageDescription">
+    Zoom is set to initial value every 15 seconds.
+    Thanks to `custom emitters` feature,
+    which is possible for all buttons actions.
+</div>
+<div class="canvasForm">
+  <div>
+    <button (click)="nextPage.emit()" class="customNextPageBtn">Next Page</button>
+    <button (click)="prevPage.emit()" class="customPrevPageBtn">Previous Page</button>
+    <button (click)="resetZoom.emit()" class="customResetViewBtn">Reset zoom</button>
+    <button (click)="rotateLeft.emit()" class="customRotateLeftBtn">Rotate left</button>
+    <button (click)="rotateRight.emit()" class="customRotateRightBtn">Rotate right</button>
+    <button (click)="zoomIn.emit()" class="customZoomBtn">Zoom In</button>
+    <button (click)="zoomOut.emit()" class="customZoomBtn">Zoom out</button>
+  </div>
+</div>
+
+<ngx-imageviewer
+  [nextPage]="nextPage"
+  [prevPage]="prevPage"
+  [resetZoom]="resetZoom"
+  [rotateLeft]="rotateLeft"
+  [rotateRight]="rotateRight"
+  [src]="fileSrc"
+  [zoomIn]="zoomIn"
+  [zoomOut]="zoomOut"
+  height="600"
+  width="800"
+></ngx-imageviewer>

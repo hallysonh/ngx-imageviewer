@@ -10,7 +10,7 @@ export class Button {
   tooltip: string;
 
   // hover state
-  hover = false;
+  hover: boolean | Function = false;
 
   // show/hide button
   display = true;
