@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { ButtonConfig, ButtonStyle, ImageViewerConfig, IMAGEVIEWER_CONFIG_DEFAULT } from './imageviewer.config';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -134,10 +135,15 @@ export abstract class ResourceLoader {
   public rendering = false;
 
   protected _image;
+  protected onLoadError = new EventEmitter();
   protected resourceChange = new Subject<string>();
 
   abstract setUp();
   abstract loadResource();
+
+  setLoadErrorEmitter(emitter) {
+    this.onLoadError = emitter;
+  }
 
   public resetViewport(canvasDim: Dimension): boolean {
     if (this.loadState !== ResourceLoadState.Loaded || !canvasDim) { return; }

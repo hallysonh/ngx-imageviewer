@@ -21,4 +21,9 @@ export class SimpleUseComponent {
   imageSrc = this.samples[0].url;
 
   constructor() { }
+
+  onSampleLoadError(err: Event | string) {
+    console.log('My custom error handler:');
+    console.error(err);
+  }
 }

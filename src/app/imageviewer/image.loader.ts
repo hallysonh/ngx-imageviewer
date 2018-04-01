@@ -15,8 +15,8 @@ export class ImageResourceLoader extends ResourceLoader {
       this.resourceChange.next();
     }, false);
     this._image.addEventListener('error', (evt) => {
-      console.error('ImageResourceLoader | load error', evt);
       this.loadState = ResourceLoadState.Failed;
+      this.onLoadError.emit(evt);
       this.resourceChange.next();
     }, false);
     this._image.src = this.src;

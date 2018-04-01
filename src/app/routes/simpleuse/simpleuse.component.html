@@ -17,4 +17,9 @@
   </div>
 </div>
 
-<ngx-imageviewer [src]="imageSrc" [width]="canvasWidth" [height]="canvasHeight"></ngx-imageviewer>
+<ngx-imageviewer
+  [src]="imageSrc"
+  [width]="canvasWidth"
+  [height]="canvasHeight"
+  (onLoadError)="onSampleLoadError($event)"
+></ngx-imageviewer>

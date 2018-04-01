@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Renderer, Inject, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ElementRef, AfterViewInit, Renderer, Inject, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import {
@@ -61,6 +61,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('imageContainer') canvasRef: ElementRef;
   //#endregion
+
+  @Output() onLoadError = new EventEmitter();
 
   //#region Private properties
   // Canvas 2D context
@@ -186,6 +188,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         }
       });
       this._resource.setUp();
+      this._resource.setLoadErrorEmitter(this.onLoadError);
       this.resetImage();
       if (this._context) { this.updateCanvas(); }
     }

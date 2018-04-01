@@ -31,8 +31,8 @@ export class PdfResourceLoader extends ResourceLoader {
       vm.loadState = ResourceLoadState.Loaded;
       vm.loadResource();
     }, (reason) => {
-      console.error(reason);
       vm.loadState = ResourceLoadState.Failed;
+      this.onLoadError.emit(reason);
       this.resourceChange.next();
     });
   }
