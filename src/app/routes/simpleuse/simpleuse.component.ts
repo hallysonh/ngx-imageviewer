@@ -13,7 +13,8 @@ export class SimpleUseComponent {
     { label: 'Image 3', url: 'https://hallysonh.github.io/ngx-imageviewer/assets/imgs/sample-2.jpg' },
     { label: 'Image 4', url: 'https://hallysonh.github.io/ngx-imageviewer/assets/imgs/sample-3.jpg' },
     { label: 'Image 5', url: 'https://hallysonh.github.io/ngx-imageviewer/assets/imgs/sample-4.jpg' },
-    { label: 'Image 6', url: 'https://hallysonh.github.io/ngx-imageviewer/assets/imgs/sample-5.jpg' }
+    { label: 'Image 6', url: 'https://hallysonh.github.io/ngx-imageviewer/assets/imgs/sample-5.jpg' },
+    { label: 'Unsupported file', url: 'https://example.com/simple.zip' },
   ];
 
   canvasWidth = 800;
@@ -21,4 +22,9 @@ export class SimpleUseComponent {
   imageSrc = this.samples[0].url;
 
   constructor() { }
+
+  onSampleLoadError(err: Event | string) {
+    console.log('My custom error handler:');
+    console.error(err);
+  }
 }

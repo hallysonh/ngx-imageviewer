@@ -1,4 +1,5 @@
-import { ButtonConfig, ButtonStyle, ImageViewerConfig } from './imageviewer.config';
+import { EventEmitter } from '@angular/core';
+import { ButtonConfig, ButtonStyle, ImageViewerConfig, IMAGEVIEWER_CONFIG_DEFAULT } from './imageviewer.config';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -10,7 +11,7 @@ export class Button {
   tooltip: string;
 
   // hover state
-  hover = false;
+  hover: boolean | Function = false;
 
   // show/hide button
   display = true;
@@ -114,6 +115,13 @@ export class Viewport {
 
 export interface Dimension { width: number; height: number; }
 
+export enum ResourceLoadState {
+  Failed,
+  Loaded,
+  Loading,
+  Pristine,
+}
+
 export abstract class ResourceLoader {
   public src: string;
   public sourceDim: { width: number, height: number };
@@ -123,18 +131,22 @@ export abstract class ResourceLoader {
   public currentItem = 1;
   public totalItem = 1;
   public showItemsQuantity = false;
-  public loaded = false;
-  public loading = false;
+  public loadState = ResourceLoadState.Pristine;
   public rendering = false;
 
   protected _image;
+  protected onLoadError = new EventEmitter();
   protected resourceChange = new Subject<string>();
 
   abstract setUp();
   abstract loadResource();
 
+  setLoadErrorEmitter(emitter) {
+    this.onLoadError = emitter;
+  }
+
   public resetViewport(canvasDim: Dimension): boolean {
-    if (!this.loaded || !canvasDim) { return; }
+    if (this.loadState !== ResourceLoadState.Loaded || !canvasDim) { return; }
 
     const rotation = this.viewport ? this.viewport.rotation : 0;
     const inverted = toSquareAngle(rotation) / 90 % 2 !== 0;
@@ -167,19 +179,47 @@ export abstract class ResourceLoader {
     ctx.fillRect(0, 0, canvasDim.width, canvasDim.height);
 
     // draw image (transformed, rotate and scaled)
-    if (!this.loading && this.loaded) {
-      ctx.translate(this.viewport.x + this.viewport.width / 2, this.viewport.y + this.viewport.height / 2);
-      ctx.rotate(this.viewport.rotation * Math.PI / 180);
-      ctx.scale(this.viewport.scale, this.viewport.scale);
-      ctx.drawImage(this._image, -this._image.width / 2, -this._image.height / 2);
-    } else {
-      ctx.fillStyle = '#333';
-      ctx.font = '25px Verdana';
-      ctx.textAlign = 'center';
-      ctx.fillText(config.loadingMessage || 'Loading...', canvasDim.width / 2, canvasDim.height / 2);
+    switch (this.loadState) {
+      case ResourceLoadState.Loaded:
+        ctx.translate(this.viewport.x + this.viewport.width / 2, this.viewport.y + this.viewport.height / 2);
+        ctx.rotate(this.viewport.rotation * Math.PI / 180);
+        ctx.scale(this.viewport.scale, this.viewport.scale);
+        ctx.drawImage(this._image, -this._image.width / 2, -this._image.height / 2);
+        break;
+      case ResourceLoadState.Failed: {
+        const msg = config.loadingErrorMessage || IMAGEVIEWER_CONFIG_DEFAULT.loadingErrorMessage;
+        const isError = true;
+        this.drawCenteredText(ctx, config, canvasDim, msg, isError);
+        break;
+      }
+      case ResourceLoadState.Loading: {
+        const msg = config.loadingMessage || IMAGEVIEWER_CONFIG_DEFAULT.loadingMessage;
+        this.drawCenteredText(ctx, config, canvasDim, msg);
+        break;
+      }
+      default:
+        // ResourceLoadState.Pristine --> do nothing
     }
 
     onFinish(ctx, config, canvasDim);
+  }
+
+  private drawCenteredText(
+    ctx: CanvasRenderingContext2D,
+    config: ImageViewerConfig,
+    canvasDim: Dimension,
+    message: string,
+    isError = false,
+  ) {
+    const color = config.messageStyle.color || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.color;
+    const errorColor = config.messageStyle.errorColor || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.errorColor;
+    const fontSize = config.messageStyle.fontSize || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.fontSize;
+    const fontFamily = config.messageStyle.fontFamily || IMAGEVIEWER_CONFIG_DEFAULT.messageStyle.fontFamily;
+
+    ctx.fillStyle = isError ? errorColor : color;
+    ctx.font = `${fontSize}px ${fontFamily}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(message, canvasDim.width / 2, canvasDim.height / 2);
   }
 
   public onResourceChange() { return this.resourceChange.asObservable(); }

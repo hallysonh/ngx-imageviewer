@@ -125,6 +125,13 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   scaleStep: 0.1, // zoom scale step (using the zoom in/out buttons)
   rotateStepper: false, // touch rotate should rotate only 90 to 90 degrees
   loadingMessage: 'Loading...',
+  loadingErrorMessage: 'Whoops, something bad happend.',
+  messageStyle: {
+    color: '#333',
+    errorColor: 'red',
+    fontSize: 25,
+    fontFamily: 'Verdana, Geneva, sans-serif', // fonts for text messages
+  },
   buttonStyle: {
     iconFontFamily: 'Material Icons', // font used to render the button icons
     alpha: 0.5, // buttons' transparence value

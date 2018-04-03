@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Renderer, Inject, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ElementRef, AfterViewInit, Renderer, Inject, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import {
@@ -8,7 +8,7 @@ import {
   ButtonConfig,
   ButtonStyle
 } from './imageviewer.config';
-import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.model';
+import { Viewport, Button, toSquareAngle, ResourceLoader, ResourceLoadState } from './imageviewer.model';
 import { Subscription } from 'rxjs/Subscription';
 import { ImageResourceLoader } from './image.loader';
 import { PdfResourceLoader } from './pdf.loader';
@@ -61,6 +61,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('imageContainer') canvasRef: ElementRef;
   //#endregion
+
+  @Output() onLoadError = new EventEmitter();
 
   //#region Private properties
   // Canvas 2D context
@@ -176,6 +178,11 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         this._pdfResource = new PdfResourceLoader(this._imageCache);
       }
       this._resource = this._pdfResource;
+    } else { // in case of unsupported files
+      if (!this._resource) { // in case unsupported file is been loaded before any valid resource
+        this._resource = new ImageResourceLoader();
+      }
+      this._resource.loadState = ResourceLoadState.Failed;
     }
     if (this._resource) {
       this._resource.src = this.src instanceof File ? URL.createObjectURL(this.src) : this.src;
@@ -186,6 +193,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         }
       });
       this._resource.setUp();
+      this._resource.setLoadErrorEmitter(this.onLoadError);
       this.resetImage();
       if (this._context) { this.updateCanvas(); }
     }
@@ -341,7 +349,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this._resource.draw(ctx, this.config, this._canvas, () => {
         ctx.restore();
 
-        if (vm._resource.loaded) {
+        if (vm._resource.loadState === ResourceLoadState.Loaded) {
           // draw buttons
           this.drawButtons(ctx);
 

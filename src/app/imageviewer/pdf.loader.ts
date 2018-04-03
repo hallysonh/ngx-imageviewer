@@ -1,5 +1,5 @@
 import { ImageCacheService } from './imagecache.service';
-import { ResourceLoader, Dimension, toSquareAngle } from './imageviewer.model';
+import { ResourceLoader, Dimension, toSquareAngle, ResourceLoadState } from './imageviewer.model';
 import { ImageViewerConfig } from './imageviewer.config';
 
 declare var PDFJS;
@@ -18,27 +18,32 @@ export class PdfResourceLoader extends ResourceLoader {
   }
 
   setUp() {
-    if (this.loading || !this.src) { return; }
+    if (this.loadState === ResourceLoadState.Loading || !this.src) {
+      return;
+    }
     const loadingTask: any = PDFJS.getDocument(this.src);
     const vm = this;
-    this.loading = true;
+    this.loadState = ResourceLoadState.Loading;
     this.currentItem = 1;
     loadingTask.promise.then((pdf) => {
       vm._pdf = pdf;
       vm.totalItem = pdf.numPages;
-      vm.loaded = true;
+      vm.loadState = ResourceLoadState.Loaded;
       vm.loadResource();
     }, (reason) => {
-      console.error(reason);
+      vm.loadState = ResourceLoadState.Failed;
+      this.onLoadError.emit(reason);
+      this.resourceChange.next();
     });
   }
 
   loadResource() {
-    if (!this.loaded) {
+    if (this.loadState !== ResourceLoadState.Loaded) {
       this._pendingReload = true;
       return;
     }
-    this.loaded = false;
+
+    this.loadState = ResourceLoadState.Pristine;
     const vm = this;
     const url = this.src;
     const page = this.currentItem;
@@ -46,8 +51,8 @@ export class PdfResourceLoader extends ResourceLoader {
     this._pdf.getPage(page).then((pdfPage) => {
       vm._page = pdfPage;
       vm.loadImage(url, page, () => {
-        vm.loaded = true;
-        vm.loading = false;
+        vm.loadState = ResourceLoadState.Loaded;
+
         if (vm._pendingReload) {
           vm._pendingReload = false;
           vm.loadResource();

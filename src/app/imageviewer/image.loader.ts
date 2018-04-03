@@ -1,4 +1,4 @@
-import { ResourceLoader, Dimension, toSquareAngle } from './imageviewer.model';
+import { ResourceLoader, Dimension, toSquareAngle, ResourceLoadState } from './imageviewer.model';
 import { ImageViewerConfig } from './imageviewer.config';
 
 export class ImageResourceLoader extends ResourceLoader {
@@ -8,11 +8,15 @@ export class ImageResourceLoader extends ResourceLoader {
   }
 
   loadResource() {
-    this.loading = true;
+    this.loadState = ResourceLoadState.Loading;
     this._image = new Image();
     this._image.addEventListener('load', (evt) => {
-      this.loaded = true;
-      this.loading = false;
+      this.loadState = ResourceLoadState.Loaded;
+      this.resourceChange.next();
+    }, false);
+    this._image.addEventListener('error', (evt) => {
+      this.loadState = ResourceLoadState.Failed;
+      this.onLoadError.emit(evt);
       this.resourceChange.next();
     }, false);
     this._image.src = this.src;
