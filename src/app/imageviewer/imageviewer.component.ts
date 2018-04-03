@@ -178,6 +178,11 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         this._pdfResource = new PdfResourceLoader(this._imageCache);
       }
       this._resource = this._pdfResource;
+    } else { // in case of unsupported files
+      if (!this._resource) { // in case unsupported file is been loaded before any valid resource
+        this._resource = new ImageResourceLoader();
+      }
+      this._resource.loadState = ResourceLoadState.Failed;
     }
     if (this._resource) {
       this._resource.src = this.src instanceof File ? URL.createObjectURL(this.src) : this.src;
