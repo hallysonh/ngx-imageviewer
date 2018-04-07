@@ -1,6 +1,7 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 
 import { ImageViewerConfig, IMAGEVIEWER_CONFIG } from '../../imageviewer/imageviewer.config';
+import { ResourceState } from '../../imageviewer/imageviewer.model';
 
 const PAGE_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
   nextPageButton: { show: false },
@@ -24,13 +25,18 @@ const PAGE_IMAGEVIEWER_CONFIG: ImageViewerConfig = {
     }
   ],
 })
-export class CustomEmittersComponent {
-  fileSrc = 'https://hallysonh.github.io/ngx-imageviewer/pdf-test.pdf';
+export class CustomEmittersComponent implements OnInit, OnDestroy {
+  filesUrls = {
+    pdf: 'https://hallysonh.github.io/ngx-imageviewer/pdf-test.pdf',
+    image: 'https://hallysonh.github.io/ngx-imageviewer/assets/imgs/sample-1.jpg',
+  };
+  fileSrc = this.filesUrls.pdf;
   resetIntv = null;
 
   nextPage = new EventEmitter<void>();
   prevPage = new EventEmitter<void>();
   resetZoom = new EventEmitter<void>();
+  resourceState: ResourceState = null;
   rotateLeft = new EventEmitter<void>();
   rotateRight = new EventEmitter<void>();
   zoomIn = new EventEmitter<void>();
@@ -50,5 +56,13 @@ export class CustomEmittersComponent {
 
   resetViewEveryHalfMinute() {
     this.resetZoom.emit();
+  }
+
+  updateResourceState(state: ResourceState) {
+    this.resourceState = state;
+  }
+
+  getStateFormatted(): string {
+    return JSON.stringify(this.resourceState, null, 0);
   }
 }

@@ -14,9 +14,15 @@
     <button (click)="zoomIn.emit()" class="customZoomBtn">Zoom In</button>
     <button (click)="zoomOut.emit()" class="customZoomBtn">Zoom out</button>
   </div>
+  <div>
+    <button (click)="fileSrc = filesUrls.image">Load IMG</button>
+    <button (click)="fileSrc = filesUrls.pdf">Load PDF</button>
+    <pre>{{ getStateFormatted() }}</pre>
+  </div>
 </div>
 
 <ngx-imageviewer
+  (onResourceStateChange)="updateResourceState($event)"
   [nextPage]="nextPage"
   [prevPage]="prevPage"
   [resetZoom]="resetZoom"

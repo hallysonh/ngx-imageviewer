@@ -8,7 +8,7 @@ import {
   ButtonConfig,
   ButtonStyle
 } from './imageviewer.config';
-import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.model';
+import { Viewport, Button, toSquareAngle, ResourceLoader, ResourceState } from './imageviewer.model';
 import { Subscription } from 'rxjs/Subscription';
 import { ImageResourceLoader } from './image.loader';
 import { PdfResourceLoader } from './pdf.loader';
@@ -61,28 +61,30 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   @Input('nextPage') set nextPageBinding(value: EventEmitter<void>) {
     value.subscribe(() => { this.nextPage(); });
-  };
+  }
   @Input('prevPage') set prevPageBinding(value: EventEmitter<void>) {
     value.subscribe(() => { this.previousPage(); });
-  };
+  }
   @Input('zoomOut') set zoomOutBinding(value: EventEmitter<void>) {
-    value.subscribe(() => { this.zoomOut() });
-  };
+    value.subscribe(() => { this.zoomOut(); });
+  }
   @Input('zoomIn') set zoomInBinding(value: EventEmitter<void>) {
     value.subscribe(() => { this.zoomIn(); });
-  };
+  }
   @Input('rotateLeft') set rotateLeftBinding(value: EventEmitter<void>) {
     value.subscribe(() => { this.rotateLeft(); });
-  };
+  }
   @Input('rotateRight') set rotateRightBinding(value: EventEmitter<void>) {
     value.subscribe(() => { this.rotateRight(); });
-  };
+  }
   @Input('resetZoom') set resetZoomBinding(value: EventEmitter<void>) {
     value.subscribe(() => { this.resetImage(); });
-  };
+  }
 
   @ViewChild('imageContainer') canvasRef: ElementRef;
   //#endregion
+
+  @Output() onResourceStateChange = new EventEmitter<ResourceState>();
 
   //#region Private properties
   // Canvas 2D context
@@ -209,6 +211,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
         }
       });
       this._resource.setUp();
+      this._resource.setResourceStateChangeEmitter(this.onResourceStateChange);
       this.resetImage();
       if (this._context) { this.updateCanvas(); }
     }
