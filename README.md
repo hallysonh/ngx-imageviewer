@@ -125,6 +125,7 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   scaleStep: 0.1, // zoom scale step (using the zoom in/out buttons)
   rotateStepper: false, // touch rotate should rotate only 90 to 90 degrees
   loadingMessage: 'Loading...',
+  showPaginator: true,
   buttonStyle: {
     iconFontFamily: 'Material Icons', // font used to render the button icons
     alpha: 0.5, // buttons' transparence value

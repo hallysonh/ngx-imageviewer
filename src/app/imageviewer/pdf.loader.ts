@@ -1,5 +1,5 @@
 import { ImageCacheService } from './imagecache.service';
-import { ResourceLoader, Dimension, toSquareAngle } from './imageviewer.model';
+import { ResourceLoader, Dimension, toSquareAngle, ResourceState, ResourceType } from './imageviewer.model';
 import { ImageViewerConfig } from './imageviewer.config';
 
 declare var PDFJS;
@@ -44,6 +44,12 @@ export class PdfResourceLoader extends ResourceLoader {
     const page = this.currentItem;
 
     this._pdf.getPage(page).then((pdfPage) => {
+      const resourceState: ResourceState = {
+        currentPage: page,
+        numOfPages: this._pdf.numPages,
+        type: ResourceType.PDF,
+      };
+      this.onResourceStateChange.emit(resourceState);
       vm._page = pdfPage;
       vm.loadImage(url, page, () => {
         vm.loaded = true;
