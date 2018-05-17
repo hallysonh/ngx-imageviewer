@@ -1,11 +1,35 @@
-<header><h1>Ngx-ImageViewer Demo</h1></header>
-<div class="wrapper">
-  <aside id="sidebar">
-    <section class="main-menu">
-      <h2>List of examples</h2>
-      <ul><li *ngFor="let menu of menus"><a [routerLink]="menu.state">{{ menu.label }}</a></li></ul>
-    </section>
-  </aside>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport="true"
+    [attr.role]="isHandset ? 'dialog' : 'navigation'"
+    [mode]="(isHandset | async)!.matches ? 'over' : 'side'"
+    [opened]="!(isHandset | async)!.matches">
+    <mat-toolbar color="primary">{{menu}}</mat-toolbar>
+    <mat-nav-list *ngFor="let link of mainlinks">
+      <a mat-list-item [routerLink]="[link.path]">{{link.label}}</a>
+    </mat-nav-list>
+    <mat-divider></mat-divider>
+    <mat-nav-list *ngFor="let link of exampleLinks">
+      <a mat-list-item [routerLink]="[link.path]">{{link.label}}</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="(isHandset | async)!.matches">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>{{ currentTitle }}</span>
+    </mat-toolbar>
+    <div class="route-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
-  <section><router-outlet></router-outlet></section>
-</div>

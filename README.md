@@ -1,6 +1,12 @@
-# Angular 5 - Canvas Image Viewer
+# Angular 6 - Canvas Image/PDF Viewer
 
-This project generate a image viewer using canvas.
+[![travis build](https://travis-ci.org/hallysonh/ngx-imageviewer.svg?branch=master)](https://travis-ci.org/hallysonh/ngx-imageviewer)
+[![Greenkeeper badge](https://badges.greenkeeper.io/hallysonh/ngx-imageviewer.svg)](https://greenkeeper.io/)
+[![version](https://img.shields.io/npm/v/@hallysonh/ngx-imageviewer.svg)](http://npm.im/@hallysonh/ngx-imageviewer)
+[![MIT License](https://img.shields.io/github/license/hallysonh/ngx-imageviewer.svg)](https://opensource.org/licenses/MIT)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+
+This project generate a image/pdf viewer using canvas.
 
 ## Features
 
@@ -21,17 +27,9 @@ Access a demo [here](https://hallysonh.github.io/ngx-imageviewer/) or download t
 
 ## Install
 
-To use ngx-imageviewer in your project, install it via _npm_:
+Run `yarn add @hallysonh/ngx-imageviewer hammerjs` to install it and its dependency.
 
-```bash
-npm i -S @hallysonh/ngx-imageviewer
-```
-
-or via _yarn_:
-
-```bash
-yarn add @hallysonh/ngx-imageviewer
-```
+> hammerjs is currently mandatory, but it will be optional in a future release.
 
 ## Icon Font
 
@@ -43,15 +41,9 @@ You can use any icon font to render the button's icons. However, the default ico
 
 Optionaly, you can also install the font library via npm or yarn.
 
-## HammerJs
+> when using another icon font, you should provide a config object with the button icon mapping
 
-To add touch support, add HammerJs in your dependencies by `yarn add hammerjs` or `npm i -S hammerjs` and include on your main module import:
-
-```typescript
-import 'hammerjs';
-```
-
-## Simplest use
+## Basic Usage
 
 After import the module `ImageViewerModule`:
 
@@ -75,15 +67,19 @@ Use the follow code on your html:
 
 Optionaly, you can provide the fields `width` and `height`. If you omit those values, the width and height in the config object will be used.
 
-## Support PDF
+## Add PDF Support
 
-To support PDF files you must first include `pdfjs` by `yarn add pdfjs-dist` and add its reference in your `.angular-cli.json` file, like below:
+To add PDF rendering support, you must first include `pdfjs` by running `yarn add pdfjs-dist@2.0.489` and add its reference in your `angular.json` file, like below:
 
 ```json
 {
   ...
   "scripts": [
-    "../node_modules/pdfjs-dist/build/pdf.min.js"
+    {
+      "input": "node_modules/pdfjs-dist/build/pdf.min.js"
+    }, {
+      "input": "node_modules/pdfjs-dist/build/pdf.worker.min.js"
+    }
   ],
   ...
 }
@@ -150,12 +146,12 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     show: true // used to show/hide the button
   },
 
-  // short button configuration
+  // shorter button configuration style
   nextPageButton: createButtonConfig('navigate_next', 'Next page', 0),
   beforePageButton: createButtonConfig('navigate_before', 'Previous page', 1),
-  zoomInButton: new ButtonConfig('zoom_in', 'Zoom in', 1),
-  rotateLeftButton: new ButtonConfig('rotate_left', 'Rotate left', 2),
-  rotateRightButton: new ButtonConfig('rotate_right', 'Rotate right', 3),
-  resetButton: new ButtonConfig('autorenew', 'Reset', 4)
+  zoomInButton: createButtonConfig('zoom_in', 'Zoom in', 1),
+  rotateLeftButton: createButtonConfig('rotate_left', 'Rotate left', 2),
+  rotateRightButton: createButtonConfig('rotate_right', 'Rotate right', 3),
+  resetButton: createButtonConfig('autorenew', 'Reset', 4)
 };
 ```

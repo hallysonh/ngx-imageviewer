@@ -1,0 +1,16 @@
+<h2 class="mat-title">Test conditional display</h2>
+
+<div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxFlex="100" fxLayoutAlign="start " class="mb">
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <button mat-raised-button (click)="condition = !condition" color="accent">Toggle Visibility</button>
+    <mat-slide-toggle [(ngModel)]="condition">{{ condition ? 'Visible' : 'Hidden'}}</mat-slide-toggle>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" fxFlex>
+    <mat-form-field fxFlex><input name="url" matInput placeholder="Resource URL" [(ngModel)]="url" disabled></mat-form-field>
+    <button mat-raised-button (click)="toggleUrl()" color="accent">Toggle URL</button>
+  </div>
+</div>
+
+<ngx-imageviewer *ngIf="condition" [src]="url"></ngx-imageviewer>
+
+<div *ngIf="!condition" fxLayoutAlign="center center" class="mat-headline">Nothing here</div>

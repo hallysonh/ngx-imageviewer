@@ -1,39 +1,33 @@
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
 
-import { IMAGEVIEWER_CONFIG, ImageViewerConfig } from './imageviewer';
-import { MY_IMAGEVIEWER_CONFIG } from './imageviewer.config';
-import { routes } from './routes';
-
-import { ImageViewerModule } from './imageviewer';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SimpleUseComponent } from './routes/simpleuse/simpleuse.component';
-import { ParentSizeComponent } from './routes/parentsize/parentsize.component';
-import { IfTestComponent } from './routes/iftest/iftest.component';
-import { SourceFileComponent } from './routes/sourcefile/sourcefile.component';
+
+import { GettingStartedComponent } from './gettingstarted/gettingstarted.component';
+import { SharedModule } from './shared/shared.module';
+import { BasicUsageComponent } from './basicusage/basicusage.component';
+import { AutoResizeComponent } from './autoresize/autoresize.component';
+import { UploadPreviewComponent } from './uploadpreview/uploadpreview.component';
+import { ConditionalDisplayComponent } from './conditionaldisplay/conditionaldisplay.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SimpleUseComponent,
-    ParentSizeComponent,
-    IfTestComponent,
-    SourceFileComponent
+    GettingStartedComponent,
+    BasicUsageComponent,
+    AutoResizeComponent,
+    UploadPreviewComponent,
+    ConditionalDisplayComponent
   ],
   imports: [
-    BrowserModule,
-    RouterModule.forRoot(routes),
-    FormsModule,
-    ImageViewerModule
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    SharedModule
   ],
-  providers: [
-    {
-      provide: IMAGEVIEWER_CONFIG,
-      useValue: MY_IMAGEVIEWER_CONFIG
-    }
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

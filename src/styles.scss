@@ -1,7 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import './assets/styles/app.scss';
+@import './styles/app.scss';
 
-ngx-imageviewer canvas {
-  border: 1px solid #ccc;
+@import '~@angular/material/theming';
+
+// always include only once per project
+@include mat-core();
+
+// import our custom theme
+@import 'theme.scss';
+
+// specify theme class eg: <body class="app-theme"> ... </body>
+.app-theme {
+  // use our theme with angular-material-theme mixin
+  @include angular-material-theme($app-theme);
+
+  .mat-button-toggle-checked {
+    background-color: mat-color($app-accent);
+    color: mat-color($app-accent, default-contrast);
+  }
 }

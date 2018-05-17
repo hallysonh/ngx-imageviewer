@@ -1,0 +1,17 @@
+{
+  "name": "@hallysonh/ngx-imageviewer",
+  "version": "2.0.0",
+  "author": "Hallyson Almeida <hallysonh@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hallysonh/ngx-imageviewer"
+  },
+  "peerDependencies": {
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0",
+    "hammerjs": "^2.x"
+  },
+  "optionalDependencies": {
+    "pdfjs-dist": "2.0.489"
+  }
+}

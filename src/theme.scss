@@ -1,0 +1,15 @@
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue.
+$app-primary: mat-palette($mat-red, 700);
+$app-accent:  mat-palette($mat-blue, A200, A100, A400);
+$app-warn:    mat-palette($mat-deep-orange);
+$app-theme:   mat-light-theme($app-primary, $app-accent, $app-warn);
+
+// Define an alternate dark theme.
+$dark-primary: mat-palette($mat-red, 700);
+$dark-accent:  mat-palette($mat-blue, A200, A100, A400);
+$dark-warn:    mat-palette($mat-deep-orange);
+$dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);

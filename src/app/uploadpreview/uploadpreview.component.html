@@ -1,0 +1,9 @@
+<h2 class="mat-h2">Preview file from Upload field</h2>
+<div class="mb">
+  <label class="mat-button">Resource File: </label>
+  <input #file id="docFile" name="docFile" (change)="docFile = $event.target.files[0]" type="file" accept="image/*,application/pdf" required>
+</div>
+
+<ngx-imageviewer *ngIf="docFile" [src]="docFile" width="800" height="600"></ngx-imageviewer>
+
+<p *ngIf="!docFile" class="mat-headline" fxLayoutAlign="center center">Select any of your local files to preview it here</p>

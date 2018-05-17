@@ -1,70 +1,19 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  align-content: stretch;
+.menu-title {
+  padding: 10px 20px 0;
+  margin: 0;
+}
 
-  header {
-    background-color: #673AB7;
-    padding: 20px;
-    color: white;
-    width: 100%;
-    box-sizing: border-box;
+.sidenav-container {
+  height: 100%;
+}
 
-    h1 {
-      height: 40px;
-      margin: 0;
-      white-space: nowrap;
-    }
-  }
+.sidenav {
+  width: 200px;
+}
 
-  .wrapper {
-    display: flex;
-    flex-direction: row;
-
-    aside {
-      min-width: 300px;
-      width: 300px;
-      height: calc(100vh - 80px);
-      background-color: #C5CAE9;
-
-      @media only screen and (max-width: 1200px) {
-        display: none;
-      }
-
-      h2 {
-        margin: 30px 0 0;
-        padding: 0 20px;
-        font-size: 20px;
-      }
-
-      ul {
-        list-style: none;
-        width: 100%;
-        padding: 0;
-        box-sizing: border-box;
-
-        li a {
-          width: 100%;
-          padding: 10px 20px;
-          box-sizing: border-box;
-          display: block;
-          text-decoration: none;
-          color: #333;
-          transition: background-color 200ms linear;
-
-          &:hover {
-            background-color: #9FA8DA;
-          }
-        }
-      }
-    }
-
-    > section {
-      flex: 1;
-
-      > * {
-        margin: 0 auto;
-      }
-    }
-  }
+.route-content {
+  padding: 20px;
+  min-height: calc(100vh - 64px - 40px);
+  max-height: calc(100vh - 64px - 40px);
+  overflow-y: auto;
 }
