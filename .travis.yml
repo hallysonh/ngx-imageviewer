@@ -30,6 +30,7 @@ script:
   - yarn build:lib
   - yarn test
   - yarn build:docs
+  - cp LICENSE README.md dist/ngx-imageviewer/
 after_script:
   - greenkeeper-lockfile-upload
 
