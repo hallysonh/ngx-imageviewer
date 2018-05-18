@@ -14,9 +14,10 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:lib": "ng build ngx-imageviewer --prod",
-    "build:app": "yarn build:lib && ng build ngx-imageviewer-app --prod --build-optimizer --vendor-chunk",
+    "build": "yarn build:lib",
+    "build:lib": "ng build ngx-imageviewer --prod && cp README.md dist/ngx-imageviewer",
     "build:docs": "ng build ngx-imageviewer-app --prod --build-optimizer --vendor-chunk --output-path docs --base-href=/ngx-imageviewer/",
+    "postbuild": "tar -C dist --overwrite -czf dist/ngx-imageviewer.tgz ngx-imageviewer",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once",
     "commit": "git-cz"
@@ -54,6 +55,8 @@
     "@types/node": "~8.9.4",
     "@types/showdown": "^1.7.3",
     "codelyzer": "~4.2.1",
+    "commitizen": "^2.9.6",
+    "cp": "^0.2.0",
     "cz-conventional-changelog": "^2.1.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -81,9 +84,7 @@
       },
       {
         "path": "@semantic-release/github",
-        "assets": [
-          "dist/ngx-imageviewer/**/*"
-        ]
+        "assets": [ "dist/ngx-imageviewer.tgz" ]
       }
     ]
   },

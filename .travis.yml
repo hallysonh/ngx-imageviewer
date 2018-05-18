@@ -16,7 +16,6 @@ cache:
   yarn: true
   directories:
     - node_modules
-    - ~/.npm
 
 notifications.email: false
 
@@ -27,10 +26,8 @@ before_install:
 before_script:
   - greenkeeper-lockfile-update
 script:
-  - yarn build:lib
+  - yarn build
   - yarn test
-  - yarn build:docs
-  - cp LICENSE README.md dist/ngx-imageviewer/
 after_script:
   - greenkeeper-lockfile-upload
 
