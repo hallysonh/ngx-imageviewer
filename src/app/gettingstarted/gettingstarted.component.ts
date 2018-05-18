@@ -15,6 +15,7 @@ const README_URL = 'https://raw.githubusercontent.com/hallysonh/ngx-imageviewer/
 })
 export class GettingStartedComponent implements OnDestroy, AfterContentInit {
   html: SafeHtml;
+  isLoading = false;
 
   private converter: Converter;
   private subscrition: Subscription;
@@ -24,11 +25,13 @@ export class GettingStartedComponent implements OnDestroy, AfterContentInit {
     private http: HttpClient,
     private sanitizer: DomSanitizer
   ) {
+    this.isLoading = true;
     this.converter = new Converter();
     this.subscrition = this.http.get(README_URL, { responseType: 'text' }).subscribe(markdown => {
       this.html = this.sanitizer.bypassSecurityTrustHtml(this.converter.makeHtml(markdown));
       this.initHightlight();
-    });
+      this.isLoading = false;
+    }, () => this.isLoading = false);
   }
 
   ngAfterContentInit() {

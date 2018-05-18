@@ -1,1 +1,5 @@
-<div [innerHtml]="html"></div>
+<div *ngIf="!isLoading" [innerHtml]="html"></div>
+
+<div *ngIf="isLoading" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" class="loading-set">
+  <mat-progress-spinner color="accent" mode="indeterminate" [diameter]="50" [strokeWidth]="8"></mat-progress-spinner>
+</div>

@@ -7,7 +7,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatToolbarModule, MatButtonModule, MatSidenavModule,
   MatIconModule, MatListModule, MatFormFieldModule,
-  MatInputModule, MatButtonToggleModule, MatSlideToggleModule
+  MatInputModule, MatButtonToggleModule, MatSlideToggleModule, MatProgressSpinnerModule
 } from '@angular/material';
 
 import { ImageViewerModule } from '@hallysonh/ngx-imageviewer';
@@ -32,6 +32,7 @@ import { ImageViewerModule } from '@hallysonh/ngx-imageviewer';
     MatFormFieldModule,
     MatInputModule,
     MatSlideToggleModule,
+    MatProgressSpinnerModule,
     ImageViewerModule
   ]
 })
