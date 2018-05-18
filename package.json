@@ -14,9 +14,10 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:lib": "ng build ngx-imageviewer --prod",
-    "build:app": "yarn build:lib && ng build ngx-imageviewer-app --prod --build-optimizer --vendor-chunk",
+    "build": "yarn build:lib",
+    "build:lib": "ng build ngx-imageviewer --prod && cp README.md dist/ngx-imageviewer",
     "build:docs": "ng build ngx-imageviewer-app --prod --build-optimizer --vendor-chunk --output-path docs --base-href=/ngx-imageviewer/",
+    "postbuild": "tar -C dist --overwrite -czf dist/ngx-imageviewer.tgz ngx-imageviewer",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once",
     "commit": "git-cz"
@@ -51,17 +52,20 @@
     "@angular/language-service": "^6.0.0",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
+    "@types/node": "~10.1.1",
     "@types/showdown": "^1.7.3",
-    "codelyzer": "~4.2.1",
+    "codelyzer": "~4.3.0",
+    "commitizen": "^2.9.6",
+    "cp": "^0.2.0",
     "cz-conventional-changelog": "^2.1.0",
-    "jasmine-core": "~2.99.1",
+    "jasmine": "^3.1.0",
+    "jasmine-core": "~3.1.0",
     "jasmine-spec-reporter": "~4.2.1",
-    "karma": "~1.7.1",
+    "karma": "~2.0.2",
     "karma-chrome-launcher": "~2.2.0",
-    "karma-coverage-istanbul-reporter": "~1.4.2",
+    "karma-coverage-istanbul-reporter": "~2.0.0",
     "karma-jasmine": "~1.1.1",
-    "karma-jasmine-html-reporter": "^0.2.2",
+    "karma-jasmine-html-reporter": "^1.1.0",
     "ng-packagr": "^3.0.0-rc.2",
     "protractor": "~5.3.0",
     "puppeteer": "^1.4.0",
@@ -70,8 +74,8 @@
     "ts-node": "^6.0.3",
     "tsickle": ">=0.25.5",
     "tslib": "^1.7.1",
-    "tslint": "~5.9.1",
-    "typescript": "~2.7.2"
+    "tslint": "~5.10.0",
+    "typescript": ">=2.7.0 <2.8.0"
   },
   "release": {
     "publish": [
@@ -82,7 +86,7 @@
       {
         "path": "@semantic-release/github",
         "assets": [
-          "dist/ngx-imageviewer/**/*"
+          "dist/ngx-imageviewer.tgz"
         ]
       }
     ]
@@ -91,5 +95,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "greenkeeper": {
+    "ignore": ["typescript"]
   }
 }
