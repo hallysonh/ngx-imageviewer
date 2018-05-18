@@ -75,7 +75,7 @@
     "tsickle": ">=0.25.5",
     "tslib": "^1.7.1",
     "tslint": "~5.10.0",
-    "typescript": ">=2.8.3"
+    "typescript": ">=2.7.0 <2.8.0"
   },
   "release": {
     "publish": [
@@ -95,5 +95,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "greenkeeper": {
+    "ignore": ["typescript"]
   }
 }
