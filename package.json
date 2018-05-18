@@ -54,10 +54,11 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~10.1.1",
     "@types/showdown": "^1.7.3",
-    "codelyzer": "~4.2.1",
+    "codelyzer": "~4.3.0",
     "commitizen": "^2.9.6",
     "cp": "^0.2.0",
     "cz-conventional-changelog": "^2.1.0",
+    "jasmine": "^3.1.0",
     "jasmine-core": "~3.1.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~2.0.2",
@@ -74,7 +75,7 @@
     "tsickle": ">=0.25.5",
     "tslib": "^1.7.1",
     "tslint": "~5.10.0",
-    "typescript": "~2.8.3"
+    "typescript": ">=2.7.0 <2.8.0"
   },
   "release": {
     "publish": [
@@ -84,7 +85,9 @@
       },
       {
         "path": "@semantic-release/github",
-        "assets": [ "dist/ngx-imageviewer.tgz" ]
+        "assets": [
+          "dist/ngx-imageviewer.tgz"
+        ]
       }
     ]
   },
