@@ -22,7 +22,6 @@
     "travis-deploy-once": "travis-deploy-once",
     "commit": "git-cz"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^6.0.0",
     "@angular/cdk": "^6.0.2",
