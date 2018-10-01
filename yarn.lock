@@ -9,6 +9,13 @@
     "@angular-devkit/core" "0.6.3"
     rxjs "^6.0.0"
 
+"@angular-devkit/architect@0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.8.4.tgz#095b382908d7dfaa2f64edfe93555dfac42957aa"
+  dependencies:
+    "@angular-devkit/core" "0.8.4"
+    rxjs "~6.2.0"
+
 "@angular-devkit/build-angular@~0.6.1":
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@angular-devkit/build-angular/-/build-angular-0.6.3.tgz#9b714f2f7fdd7422f990991c79444436d99898e3"
@@ -66,14 +73,14 @@
   optionalDependencies:
     node-sass "^4.9.0"
 
-"@angular-devkit/build-ng-packagr@~0.6.1":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/build-ng-packagr/-/build-ng-packagr-0.6.3.tgz#ad6b345187425ce5e9fb22e36036898cd6e85f75"
+"@angular-devkit/build-ng-packagr@~0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/build-ng-packagr/-/build-ng-packagr-0.8.4.tgz#3a5c636bfcb51f7854178e0b34373cf5925ed61a"
   dependencies:
-    "@angular-devkit/architect" "0.6.3"
-    "@angular-devkit/core" "0.6.3"
-    resolve "^1.5.0"
-    rxjs "^6.0.0"
+    "@angular-devkit/architect" "0.8.4"
+    "@angular-devkit/core" "0.8.4"
+    rxjs "~6.2.0"
+    semver "^5.3.0"
 
 "@angular-devkit/build-optimizer@0.6.3":
   version "0.6.3"
@@ -91,6 +98,15 @@
     ajv "~6.4.0"
     chokidar "^2.0.3"
     rxjs "^6.0.0"
+    source-map "^0.5.6"
+
+"@angular-devkit/core@0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-0.8.4.tgz#ccc73308990c7bc912e2f2759bf29e069eabf42f"
+  dependencies:
+    ajv "~6.4.0"
+    chokidar "^2.0.3"
+    rxjs "~6.2.0"
     source-map "^0.5.6"
 
 "@angular-devkit/schematics@0.6.3":
@@ -7261,6 +7277,12 @@ rx@^4.1.0:
 rxjs@^6.0.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.1.0.tgz#833447de4e4f6427b9cec3e5eb9f56415cd28315"
+  dependencies:
+    tslib "^1.9.0"
+
+rxjs@~6.2.0:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.2.2.tgz#eb75fa3c186ff5289907d06483a77884586e1cf9"
   dependencies:
     tslib "^1.9.0"
 
