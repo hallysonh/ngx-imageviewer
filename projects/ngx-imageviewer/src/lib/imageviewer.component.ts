@@ -14,9 +14,9 @@ const MIN_TOOLTIP_WIDTH_SPACE = 500;
   selector: 'ngx-imageviewer',
   template: `
     <canvas #imageContainer [width]="width" [height]="height"
-      (tap)="onTap($event)" (pinchin)="processTouchEvent($event)" (pinchout)="processTouchEvent($event)"
+      (click)="onTap($event)" (pinchin)="processTouchEvent($event)" (pinchout)="processTouchEvent($event)"
       (panmove)="processTouchEvent($event)" (panend)="onTouchEnd()" (rotatemove)="processTouchEvent($event)"
-        (rotateend)="onTouchEnd()">
+      (rotateend)="onTouchEnd()">
     </canvas>
   `,
   styles: [`
@@ -198,7 +198,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   //#region Touch events
   onTap(evt) {
-    const activeElement = this.getUIElement(this.screenToCanvasCentre(evt.center));
+    const position = { x: evt.pageX, y: evt.pageY };
+    const activeElement = this.getUIElement(this.screenToCanvasCentre(position));
     if (activeElement !== null) { activeElement.onClick(evt); }
   }
 
