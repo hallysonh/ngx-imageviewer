@@ -1,4 +1,4 @@
-# Angular 6 - Canvas Image/PDF Viewer
+# Angular 8 - Canvas Image/PDF Viewer
 
 [![travis build](https://travis-ci.org/hallysonh/ngx-imageviewer.svg?branch=master)](https://travis-ci.org/hallysonh/ngx-imageviewer)
 [![Greenkeeper badge](https://badges.greenkeeper.io/hallysonh/ngx-imageviewer.svg)](https://greenkeeper.io/)
@@ -10,16 +10,16 @@ This project generate a image/pdf viewer using canvas.
 
 ## Features
 
-* Configurable
-* Resizeble component
-* Supports JPEG, PNG, GIF and **PDF**
-* Support File Objects
-* Avaliable actions:
-  * **Rotate**
-  * **Zoom**
-  * Reset to maximize size
-  * Free movable
-  * Change page (available just for PDF files)
+- Configurable
+- Resizeble component
+- Supports JPEG, PNG, GIF and **PDF**
+- Support File Objects
+- Avaliable actions:
+  - **Rotate**
+  - **Zoom**
+  - Reset to maximize size
+  - Free movable
+  - Change page (available just for PDF files)
 
 ## Demo
 
@@ -36,7 +36,7 @@ Run `yarn add @hallysonh/ngx-imageviewer hammerjs` to install it and its depende
 You can use any icon font to render the button's icons. However, the default icon font is the Google's Material Icons. To use them you can just add the follow line to your index.html:
 
 ```html
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 ```
 
 Optionaly, you can also install the font library via npm or yarn.
@@ -51,12 +51,9 @@ After import the module `ImageViewerModule`:
 import { ImageViewerModule } from '@hallysonh/ngx-imageviewer';
 
 @NgModule({
-  imports: [
-    ImageViewerModule
-  ]
+  imports: [ImageViewerModule],
 })
-export class AppModule { }
-
+export class AppModule {}
 ```
 
 Use the follow code on your html:
@@ -128,7 +125,7 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     bgStyle: '#000000', //  buttons' background style
     iconStyle: '#ffffff', // buttons' icon colors
     borderStyle: '#000000', // buttons' border style
-    borderWidth: 0 // buttons' border width (0 == disabled)
+    borderWidth: 0, // buttons' border width (0 == disabled)
   },
   tooltips: {
     enabled: true, // enable or disable tooltips for buttons
@@ -137,13 +134,14 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
     textStyle: '#ffffff', // tooltip's text style
     textAlpha: 0.9, // tooltip's text transparence
     padding: 15, // tooltip padding
-    radius: 20 // tooltip border radius
+    radius: 20, // tooltip border radius
   },
-  zoomOutButton: { // zoomOut button config
+  zoomOutButton: {
+    // zoomOut button config
     icon: 'zoom_out', // icon text
     tooltip: 'Zoom out', // button tooltip
     sortId: 0, // number used to determine the order of the buttons
-    show: true // used to show/hide the button
+    show: true, // used to show/hide the button
   },
 
   // shorter button configuration style
@@ -152,6 +150,6 @@ export const IMAGEVIEWER_CONFIG_DEFAULT: ImageViewerConfig = {
   zoomInButton: createButtonConfig('zoom_in', 'Zoom in', 1),
   rotateLeftButton: createButtonConfig('rotate_left', 'Rotate left', 2),
   rotateRightButton: createButtonConfig('rotate_right', 'Rotate right', 3),
-  resetButton: createButtonConfig('autorenew', 'Reset', 4)
+  resetButton: createButtonConfig('autorenew', 'Reset', 4),
 };
 ```
