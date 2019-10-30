@@ -37,7 +37,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   // FIX not workign properly
-  private _filetype: string;
+  private _filetype: string = 'image';
   get filetype() { return this._filetype; }
   @Input('filetype') set filetype(value: string) {
     if (value === this._filetype) { return; }
