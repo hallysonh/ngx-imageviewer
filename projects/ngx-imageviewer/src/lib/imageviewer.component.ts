@@ -7,6 +7,7 @@ import { Viewport, Button, toSquareAngle, ResourceLoader } from './imageviewer.m
 import { ImageResourceLoader } from './image.loader';
 import { ImageCacheService } from './imagecache.service';
 import { PdfResourceLoader } from './pdf.loader';
+import * as Hammer from 'hammerjs';
 
 const MIN_TOOLTIP_WIDTH_SPACE = 500;
 
@@ -151,6 +152,28 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.addEventListeners();
 
     this.updateCanvas();
+    
+    // add Angular 9 compatibility
+    const hammer = new Hammer(this._canvas);
+        hammer.get('pinch').set({ enable: true });
+        hammer.on('pinchout', (e) => {
+            this.processTouchEvent(e);
+        });
+        hammer.on('pinchin', (e) => {
+            this.processTouchEvent(e);
+        });
+        hammer.on('panmove', (e) => {
+            this.processTouchEvent(e);
+        });
+        hammer.on('panend', (e) => {
+            this.onTouchEnd();
+        });
+        hammer.on('rotatemove', (e) => {
+            this.onTouchEnd();
+        });
+        hammer.on('rotateend', (e) => {
+            this.onTouchEnd();
+        });
   }
 
   ngOnDestroy() {
