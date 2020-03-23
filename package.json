@@ -49,7 +49,7 @@
     "@angular/cli": "~8.3.9",
     "@angular/compiler-cli": "^8.2.10",
     "@angular/language-service": "^8.2.10",
-    "@types/jasmine": "~2.8.6",
+    "@types/jasmine": "~3.5.10",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~10.1.1",
     "@types/showdown": "^1.7.3",
