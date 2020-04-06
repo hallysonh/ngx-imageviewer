@@ -487,7 +487,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
 
   private isImage(file: string | File) {
     if (this._filetype && this._filetype.toLowerCase() === 'image') { return true; }
-    return testFile(file, '\\.(png|jpg|jpeg|gif)|image/png');
+    return testFile(file, '\\.(png|jpg|jpeg|gif)|image/png|image/jpeg|image/jpg|image/gif');
   }
 
   private isPdf(file: string | File) {
