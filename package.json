@@ -54,7 +54,7 @@
     "@types/node": "~10.1.1",
     "@types/showdown": "^1.7.3",
     "codelyzer": "~4.3.0",
-    "commitizen": "^2.9.6",
+    "commitizen": "^4.0.4",
     "cp": "^0.2.0",
     "cz-conventional-changelog": "^2.1.0",
     "jasmine": "^3.1.0",
