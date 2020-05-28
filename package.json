@@ -63,7 +63,7 @@
     "karma": "~2.0.2",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.0",
-    "karma-jasmine": "~1.1.1",
+    "karma-jasmine": "~3.3.0",
     "karma-jasmine-html-reporter": "^1.1.0",
     "ng-packagr": "^3.0.0-rc.2",
     "protractor": "~5.3.0",
