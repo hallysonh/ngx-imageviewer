@@ -1,4 +1,4 @@
-# Angular 8 - Canvas Image/PDF Viewer
+# Angular 14 - Canvas Image/PDF Viewer
 
 [![travis build](https://travis-ci.org/hallysonh/ngx-imageviewer.svg?branch=master)](https://travis-ci.org/hallysonh/ngx-imageviewer)
 [![Greenkeeper badge](https://badges.greenkeeper.io/hallysonh/ngx-imageviewer.svg)](https://greenkeeper.io/)
