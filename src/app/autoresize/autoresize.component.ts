@@ -6,7 +6,7 @@ import { Component, AfterViewInit, ViewChild, ElementRef, HostListener } from '@
   styleUrls: ['./autoresize.component.scss']
 })
 export class AutoResizeComponent implements AfterViewInit {
-  @ViewChild('imagewrapper',{static: false}) wrapper: ElementRef;
+  @ViewChild('imagewrapper') wrapper: ElementRef;
 
   private _canvasDim = { width: 10, height: 10 };
   get canvasDim() {

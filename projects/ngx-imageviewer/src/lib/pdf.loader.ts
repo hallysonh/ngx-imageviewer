@@ -56,7 +56,7 @@ export class PdfResourceLoader extends ResourceLoader {
           vm._pendingReload = false;
           vm.loadResource();
         } else {
-          vm.resourceChange.next();
+          vm.resourceChange.next(null);
         }
       });
     });

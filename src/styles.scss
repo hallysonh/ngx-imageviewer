@@ -1,11 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
 
 @import './styles/app.scss';
 
-@import '~@angular/material/theming';
 
 // always include only once per project
-@include mat-core();
+@include mat.core();
 
 // import our custom theme
 @import 'theme.scss';
@@ -13,10 +13,10 @@
 // specify theme class eg: <body class="app-theme"> ... </body>
 .app-theme {
   // use our theme with angular-material-theme mixin
-  @include angular-material-theme($app-theme);
+  @include mat.all-component-themes($app-theme);
 
   .mat-button-toggle-checked {
-    background-color: mat-color($app-accent);
-    color: mat-color($app-accent, default-contrast);
+    background-color: mat.get-color-from-palette($app-accent);
+    color: mat.get-color-from-palette($app-accent, default-contrast);
   }
 }

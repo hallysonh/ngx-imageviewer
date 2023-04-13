@@ -63,7 +63,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this.resetImage();
   }
 
-  @ViewChild('imageContainer', {static: false}) canvasRef: any;
+  @ViewChild('imageContainer') canvasRef: any;
   //#endregion
 
   //#region Private properties

@@ -12,9 +12,12 @@
   ],
   "homepage": "https://github.com/hallysonh/ngx-imageviewer#readme",
   "peerDependencies": {
-    "@angular/common": "^8.2.10",
-    "@angular/core": "^8.2.10",
+    "@angular/common": "^14.x",
+    "@angular/core": "^14.x",
     "hammerjs": "^2.x"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
   },
   "optionalDependencies": {
     "pdfjs-dist": "2.0.489"
