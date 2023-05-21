@@ -1,4 +1,4 @@
-# Angular 8 - Canvas Image/PDF Viewer
+# Angular 14 - Canvas Image/PDF Viewer
 
 [![travis build](https://travis-ci.org/hallysonh/ngx-imageviewer.svg?branch=master)](https://travis-ci.org/hallysonh/ngx-imageviewer)
 [![Greenkeeper badge](https://badges.greenkeeper.io/hallysonh/ngx-imageviewer.svg)](https://greenkeeper.io/)
@@ -23,11 +23,11 @@ This project generate a image/pdf viewer using canvas.
 
 ## Demo
 
-Access a demo [here](https://hallysonh.github.io/ngx-imageviewer/) or download this project and execute: `yarn && yarn start` or `npm install && npm run start` to self server it.
+Access a demo [here](https://hallysonh.github.io/ngx-imageviewer/) or download this project and execute: `npm install && npm run start` to self server it.
 
 ## Install
 
-Run `yarn add @hallysonh/ngx-imageviewer hammerjs` to install it and its dependency.
+Run `npm add @hallysonh/ngx-imageviewer hammerjs` to install it and its dependency.
 
 > hammerjs is currently mandatory, but it will be optional in a future release.
 
@@ -66,7 +66,7 @@ Optionaly, you can provide the fields `width` and `height`. If you omit those va
 
 ## Add PDF Support
 
-To add PDF rendering support, you must first include `pdfjs` by running `yarn add pdfjs-dist@2.0.489` and add its reference in your `angular.json` file, like below:
+To add PDF rendering support, you must first include `pdfjs` by running `npm add pdfjs-dist@3.6.172` and add its reference in your `angular.json` file, like below:
 
 ```json
 {

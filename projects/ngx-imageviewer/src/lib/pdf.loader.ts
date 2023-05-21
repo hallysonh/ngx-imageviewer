@@ -1,10 +1,10 @@
-import { ResourceLoader, Dimension, toSquareAngle } from './imageviewer.model';
+import { ResourceLoader } from './imageviewer.model';
 import { ImageCacheService } from './imagecache.service';
-import { ImageViewerConfig } from './imageviewer.config';
-import { PDFJSStatic, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
 
-declare var pdfjsLib: any;
-declare var pdfjsWorker: any;
+
+declare var pdfjsWorker;
 
 export class PdfResourceLoader extends ResourceLoader {
   private _pdf: PDFDocumentProxy;
@@ -27,7 +27,7 @@ export class PdfResourceLoader extends ResourceLoader {
     const loadingTask = pdfjsLib.getDocument(vm.src);
     vm.loading = true;
     vm.currentItem = 1;
-    loadingTask.then((pdf: PDFDocumentProxy) => {
+    loadingTask.promise.then((pdf: PDFDocumentProxy) => {
       vm._pdf = pdf;
       vm.totalItem = pdf.numPages;
       vm.loaded = true;
@@ -56,7 +56,7 @@ export class PdfResourceLoader extends ResourceLoader {
           vm._pendingReload = false;
           vm.loadResource();
         } else {
-          vm.resourceChange.next();
+          vm.resourceChange.next(null);
         }
       });
     });
@@ -73,7 +73,7 @@ export class PdfResourceLoader extends ResourceLoader {
 
     const canvas: HTMLCanvasElement = document.createElement('canvas');
     const context = canvas.getContext('2d');
-    const pageVp = vm._page.getViewport(2);
+    const pageVp = vm._page.getViewport({scale: 2});
 
     canvas.width = pageVp.width;
     canvas.height = pageVp.height;
@@ -83,7 +83,7 @@ export class PdfResourceLoader extends ResourceLoader {
       viewport: pageVp
     };
     const renderTask = vm._page.render(renderContext);
-    renderTask.then(function () {
+    renderTask.promise.then(function () {
       canvas.toBlob(blob => {
         const img = new Image();
         img.onload = onFinish;
