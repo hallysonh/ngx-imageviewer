@@ -13,7 +13,7 @@ export class ImageResourceLoader extends ResourceLoader {
     this._image.addEventListener('load', (evt) => {
       this.loaded = true;
       this.loading = false;
-      this.resourceChange.next();
+      this.resourceChange.next(null);
     }, false);
     this._image.src = this.src;
   }
